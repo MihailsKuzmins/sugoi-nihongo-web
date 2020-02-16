@@ -1,0 +1,15 @@
+{
+	"projects": {
+		"default": "sugoi-nihongo-app"
+	},
+	"targets": {
+		"sugoi-nihongo-app": {
+			"hosting": {
+				"sugoi-nihongo-app": [
+					"https://sugoi-nihongo-app.web.app/",
+					"https://sugoi-nihongo-app.firebaseapp.com/"
+				]
+			}
+		}
+	}
+}
