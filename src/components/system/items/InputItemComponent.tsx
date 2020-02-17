@@ -1,8 +1,8 @@
+import ItemComponentBase, { ItemBase } from 'components/system/items/ItemComponentBase'
+import MaxLengthRule from 'helpers/items/rules/maxLengthRule'
+import RuleBase from 'helpers/items/rules/ruleBase'
 import React from 'react'
 import { InputType } from 'resources/ui/inputType'
-import ItemComponentBase, { ItemBase } from 'components/system/items/ItemComponentBase'
-import RuleBase from 'helpers/items/rules/ruleBase'
-import MaxLengthRule from 'helpers/items/rules/maxLengthRule'
 
 export default class InputItemComponent extends ItemComponentBase<string, Props, State> {
 	constructor(props: Props) {

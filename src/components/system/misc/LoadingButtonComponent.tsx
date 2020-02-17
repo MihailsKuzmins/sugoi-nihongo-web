@@ -1,6 +1,6 @@
-import React from 'react'
 import SubDisposable from 'helpers/disposable/subDisposable'
-import { ReplaySubject, Observable } from 'rxjs'
+import React from 'react'
+import { Observable, ReplaySubject } from 'rxjs'
 import { startWith } from 'rxjs/operators'
 
 export default class LoadingButtonComponent extends React.PureComponent<Props, State> {

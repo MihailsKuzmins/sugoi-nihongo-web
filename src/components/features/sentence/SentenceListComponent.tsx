@@ -1,14 +1,14 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
-import SentenceListModel from 'models/sentence/sentenceListModel'
-import { container } from 'tsyringe'
-import SentenceService from 'services/sentenceService'
-import { sentenceList } from 'resources/routing/routes'
-import createSpinner from 'ui/createSpinner'
+import Octicon, { Plus } from '@primer/octicons-react'
 import ComponentBase from 'components/ComponentBase'
-import Octicon, {Plus} from '@primer/octicons-react'
+import SentenceFormComponent from 'components/features/sentence/SentenceFormComponent'
+import SentenceListModel from 'models/sentence/sentenceListModel'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { h1IconHeight } from 'resources/constants/uiConstants'
-import SentenceFormComponent from './SentenceFormComponent'
+import { sentenceList } from 'resources/routing/routes'
+import SentenceService from 'services/sentenceService'
+import { container } from 'tsyringe'
+import createSpinner from 'ui/createSpinner'
 
 export default class SentenceListComponent extends ComponentBase<{}, State> {
 	private readonly mSentenceService = container.resolve(SentenceService)

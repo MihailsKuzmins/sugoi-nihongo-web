@@ -1,5 +1,5 @@
-import React from 'react'
 import ItemComponentBase, { ItemBase } from 'components/system/items/ItemComponentBase'
+import React from 'react'
 
 export default class CheckboxItemComponent extends ItemComponentBase<boolean, Props, State> {
 	constructor(props: Props) {

@@ -7,6 +7,7 @@ import WordDetailModel from 'models/word/wordDetailModel'
 import { LooseObject } from 'models/system/looseObject'
 import { minMark, nonStudiableMark } from 'resources/constants/wordConstants'
 import FirestoreConstraintError from 'resources/errors/firestoreConstraintError'
+import { today } from 'functions/systemTypes/dateFunctions'
 
 @singleton()
 export default class WordService extends FirestoreServiceBase {
@@ -57,7 +58,7 @@ export default class WordService extends FirestoreServiceBase {
 	public readonly saveDocumentAsync = async (wordId: string | undefined, data: LooseObject) => {
 		const saveAsync = async () => {
 			if (!wordId) {
-				data[wordDateCreated] = new Date()
+				data[wordDateCreated] = today()
 				data[wordDateLastAccessed] = defaultDate
 				data[wordIsStudiable] = true
 				data[wordMark] = minMark

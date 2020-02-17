@@ -1,6 +1,6 @@
 import DataSaverBase from 'helpers/dataSavers/dataSaverBase'
-import { CollectionReference, MandatoryProps } from 'resources/types'
 import { LooseObject } from 'models/system/looseObject'
+import { CollectionReference, MandatoryProps } from 'resources/types'
 
 export default class ExistingDataSaver extends DataSaverBase {
 	constructor(data: LooseObject, private readonly mDocumentId: string) {

@@ -1,5 +1,5 @@
+import { isNullOrWhiteSpace } from 'functions/systemTypes/stringFunctions'
 import RuleBase from 'helpers/items/rules/ruleBase'
-import { isNullOrWhiteSpace } from 'functions/stringFunctions'
 
 export default class NotNullOrWhiteSpaceRule extends RuleBase<string> {
 	constructor() {

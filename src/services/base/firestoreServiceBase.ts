@@ -1,10 +1,10 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { QueryFunc, SnapshotsFunc, SnapshotFunc, Timestamp, MandatoryProps } from 'resources/types'
-import { defaultDate, defaultBool, defaultNumber } from 'resources/constants/firestoreConstants'
-import { LooseObject } from 'models/system/looseObject'
-import NewDataSaver from 'helpers/dataSavers/newDataSaver'
 import ExistingDataSaver from 'helpers/dataSavers/existingDataSaver'
+import NewDataSaver from 'helpers/dataSavers/newDataSaver'
+import { LooseObject } from 'models/system/looseObject'
+import { defaultBool, defaultDate, defaultNumber } from 'resources/constants/firestoreConstants'
+import { MandatoryProps, QueryFunc, SnapshotFunc, SnapshotsFunc, Timestamp } from 'resources/types'
 
 export default abstract class FirestoreServiceBase {
 	private static get database() { return firebase.firestore() }

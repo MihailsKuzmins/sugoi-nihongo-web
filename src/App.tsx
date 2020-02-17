@@ -1,14 +1,14 @@
-import React, { Suspense } from 'react'
-import 'reflect-metadata'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.css'
-import './App.css'
 import 'bootstrap'
-import { container } from 'tsyringe'
-import AuthService from 'services/authService'
-import useGlobalState from 'helpers/useGlobalState'
+import 'bootstrap/dist/css/bootstrap.css'
 import NavBarComponent from 'components/system/NavBarComponent'
-import { wordList, home, sentenceList, grammarRuleList, wordDetail, sentenceDetail, grammarRuleDetail } from 'resources/routing/routes'
+import useGlobalState from 'helpers/useGlobalState'
+import React, { Suspense } from 'react'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import 'reflect-metadata'
+import { grammarRuleDetail, grammarRuleList, home, sentenceDetail, sentenceList, wordDetail, wordList } from 'resources/routing/routes'
+import AuthService from 'services/authService'
+import { container } from 'tsyringe'
+import './App.css'
 
 const authService = container.resolve(AuthService)
 

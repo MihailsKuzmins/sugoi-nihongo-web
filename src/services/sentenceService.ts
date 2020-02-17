@@ -1,10 +1,11 @@
-import { singleton } from 'tsyringe'
-import FirestoreServiceBase from 'services/base/firestoreServiceBase'
-import { SentencesFunc, SentenceFunc, CollectionReference, Timestamp } from 'resources/types'
-import { sentencesCollection, sentenceOriginal, sentenceDateCreated, sentenceTranslation, sentenceTranscription } from 'resources/constants/firestoreConstants'
-import SentenceListModel from 'models/sentence/sentenceListModel'
+import { today } from 'functions/systemTypes/dateFunctions'
 import SentenceDetailModel from 'models/sentence/sentenceDetailModel'
+import SentenceListModel from 'models/sentence/sentenceListModel'
 import { LooseObject } from 'models/system/looseObject'
+import { sentenceDateCreated, sentenceOriginal, sentencesCollection, sentenceTranscription, sentenceTranslation } from 'resources/constants/firestoreConstants'
+import { CollectionReference, SentenceFunc, SentencesFunc, Timestamp } from 'resources/types'
+import FirestoreServiceBase from 'services/base/firestoreServiceBase'
+import { singleton } from 'tsyringe'
 
 @singleton()
 export default class SentenceService extends FirestoreServiceBase {
@@ -45,7 +46,7 @@ export default class SentenceService extends FirestoreServiceBase {
 
 	public readonly saveDetailAsync = async (sentenceId: string | undefined, data: LooseObject) => {
 		if (!sentenceId) {
-			data[sentenceDateCreated] = new Date()
+			data[sentenceDateCreated] = today()
 		}
 
 		await FirestoreServiceBase.saveDetailAsync(sentencesCollection, sentenceId, data, this.mSentenceMandatoryProps)

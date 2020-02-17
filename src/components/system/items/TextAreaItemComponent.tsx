@@ -1,7 +1,7 @@
-import React from 'react'
 import ItemComponentBase, { ItemBase } from 'components/system/items/ItemComponentBase'
 import MaxLengthRule from 'helpers/items/rules/maxLengthRule'
 import RuleBase from 'helpers/items/rules/ruleBase'
+import React from 'react'
 
 export default class TextAreaItemComponent extends ItemComponentBase<string, Props, State> {
 	constructor(props: Props) {

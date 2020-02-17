@@ -1,5 +1,5 @@
 import { LooseObjectV } from 'models/system/looseObjectV'
-import { Subject, ReplaySubject } from 'rxjs'
+import { ReplaySubject, Subject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
 
 export default abstract class RxBus {

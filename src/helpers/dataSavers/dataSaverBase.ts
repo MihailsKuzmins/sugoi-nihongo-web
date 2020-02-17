@@ -1,5 +1,5 @@
-import { MandatoryProps, CollectionReference } from 'resources/types'
 import { LooseObject } from 'models/system/looseObject'
+import { CollectionReference, MandatoryProps } from 'resources/types'
 
 export default abstract class DataSaverBase implements DataSaver {
 	private readonly mPropertyNames: string[]

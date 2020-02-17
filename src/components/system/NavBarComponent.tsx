@@ -1,10 +1,10 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
-import {home, wordList, sentenceList, grammarRuleList} from 'resources/routing/routes'
-import { container } from 'tsyringe'
-import AuthService from 'services/authService'
-import Octicon, {Gear} from '@primer/octicons-react'
+import Octicon, { Gear } from '@primer/octicons-react'
 import useGlobalState from 'helpers/useGlobalState'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { grammarRuleList, home, sentenceList, wordList } from 'resources/routing/routes'
+import AuthService from 'services/authService'
+import { container } from 'tsyringe'
 
 const navLinks: Array<RouteLink> = [
 	{ path: wordList, label: 'Words' },

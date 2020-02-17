@@ -1,7 +1,7 @@
-import React from 'react'
-import { ReplaySubject, Observable } from 'rxjs'
-import { startWith } from 'rxjs/operators'
 import SubDisposable from 'helpers/disposable/subDisposable'
+import React from 'react'
+import { Observable, ReplaySubject } from 'rxjs'
+import { startWith } from 'rxjs/operators'
 
 export default class CloseModalButtonComponent extends React.PureComponent<Props, State> {
 	private readonly mSubDisposable = new SubDisposable()

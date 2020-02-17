@@ -1,6 +1,6 @@
+import 'functions/systemTypes/stringFunctions'
 import RuleBase from 'helpers/items/rules/ruleBase'
 import { isKana, isKanji } from 'wanakana'
-import 'functions/stringFunctions'
 
 export default class KanaOrKanjiRule extends RuleBase<string> {
 	constructor() {

@@ -1,5 +1,5 @@
-import { Subscription } from "rxjs";
 import Disposable from "models/system/disposable";
+import { Subscription } from "rxjs";
 
 export default class SubDisposable implements Disposable {
 	private readonly mArray: Subscription[] = []

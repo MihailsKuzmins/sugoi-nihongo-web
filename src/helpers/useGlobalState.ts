@@ -1,5 +1,5 @@
-import { createGlobalState } from 'react-hooks-global-state'
 import GlobalState from 'models/system/globalState'
+import { createGlobalState } from 'react-hooks-global-state'
 
 const initialState: GlobalState = {
 	isAuthenticated: false

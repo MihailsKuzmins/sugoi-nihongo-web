@@ -1,10 +1,11 @@
+import { today } from 'functions/systemTypes/dateFunctions'
+import GrammarRuleDetailModel from 'models/grammarRule/grammarRuleDetailModel'
+import GrammarRuleListModel from 'models/grammarRule/grammarRuleListModel'
+import { LooseObject } from 'models/system/looseObject'
+import { grammarRuleBody, grammarRuleDateCreated, grammarRuleHeader, grammarRulesCollection } from 'resources/constants/firestoreConstants'
+import { CollectionReference, GrammarRuleFunc, GrammarRulesFunc, Timestamp } from 'resources/types'
+import FirestoreServiceBase from 'services/base/firestoreServiceBase'
 import { singleton } from 'tsyringe'
-import FirestoreServiceBase from './base/firestoreServiceBase';
-import { GrammarRulesFunc, GrammarRuleFunc, CollectionReference, Timestamp } from 'resources/types';
-import { grammarRulesCollection, grammarRuleDateCreated, grammarRuleHeader, grammarRuleBody } from 'resources/constants/firestoreConstants';
-import GrammarRuleListModel from 'models/grammarRule/grammarRuleListModel';
-import GrammarRuleDetailModel from 'models/grammarRule/grammarRuleDetailModel';
-import { LooseObject } from 'models/system/looseObject';
 
 @singleton()
 export default class GrammarRuleService extends FirestoreServiceBase {
@@ -44,7 +45,7 @@ export default class GrammarRuleService extends FirestoreServiceBase {
 
 	public readonly saveDocumentAsync = async (grammarRuleId: string | undefined, data: LooseObject) => {
 		if (!grammarRuleId) {
-			data[grammarRuleDateCreated] = new Date()
+			data[grammarRuleDateCreated] = today()
 		}
 
 		await FirestoreServiceBase.saveDetailAsync(grammarRulesCollection, grammarRuleId, data, this.mGrammarRuleMandatoryProps)

@@ -1,11 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import './index.css'
-import App from './App'
-import * as serviceWorker from './serviceWorker'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import firebaseConfig from 'resources/firebaseConfig'
+import App from './App'
+import './index.css'
+import * as serviceWorker from './serviceWorker'
 
 firebase.initializeApp(firebaseConfig)
 

@@ -1,4 +1,4 @@
-import { nonStudiableMark, maxMark, markExcellent, markGood, markAverage, minMark } from 'resources/constants/wordConstants'
+import { markAverage, markExcellent, markGood, maxMark, minMark, nonStudiableMark } from 'resources/constants/wordConstants'
 import { MarkState } from 'resources/word/markState'
 
 export const getMarkState = (mark: number) => {

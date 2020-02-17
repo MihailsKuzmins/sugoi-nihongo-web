@@ -1,5 +1,5 @@
+import 'functions/systemTypes/stringFunctions'
 import { isKanji } from 'wanakana'
-import 'functions/stringFunctions'
 
 export function hasKanji(value: string) {
 	return value.some(x => isKanji(x))

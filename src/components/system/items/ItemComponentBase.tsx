@@ -1,11 +1,11 @@
-import React from 'react'
-import { ReplaySubject, Observable, combineLatest } from 'rxjs'
-import { startWith, distinctUntilChanged, map } from 'rxjs/operators'
-import SubDisposable from 'helpers/disposable/subDisposable'
 import CompositeDisposable from 'helpers/disposable/compositeDisposable'
-import ValidationContext from 'helpers/items/validationContext'
+import SubDisposable from 'helpers/disposable/subDisposable'
 import RuleBase from 'helpers/items/rules/ruleBase'
+import ValidationContext from 'helpers/items/validationContext'
 import Disposable from 'models/system/disposable'
+import React from 'react'
+import { combineLatest, Observable, ReplaySubject } from 'rxjs'
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators'
 
 export default abstract class ItemComponentBase<TValue, TProps extends { item: ItemBase<TValue> }, TState extends StateBase<TValue>> extends React.PureComponent<TProps, TState> {
 	private readonly mDisposable = new CompositeDisposable()

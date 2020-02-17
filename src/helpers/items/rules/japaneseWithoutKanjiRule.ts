@@ -1,7 +1,7 @@
+import { hasNoKanji } from 'functions/japaneseFunctions'
+import 'functions/systemTypes/stringFunctions'
 import RuleBase from 'helpers/items/rules/ruleBase'
 import { isJapanese } from 'wanakana'
-import { hasNoKanji } from 'functions/japaneseFunctions'
-import 'functions/stringFunctions'
 
 export default class JapaneseWithoutKanjiRule extends RuleBase<string> {
 	constructor() {
