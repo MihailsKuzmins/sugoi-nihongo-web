@@ -1,11 +1,11 @@
+import 'reflect-metadata'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 import NavBarComponent from 'components/system/NavBarComponent'
 import useGlobalState from 'helpers/useGlobalState'
 import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import 'reflect-metadata'
-import { grammarRuleDetail, grammarRuleList, home, sentenceDetail, sentenceList, wordDetail, wordList } from 'resources/routing/routes'
+import { grammarRuleDetail, grammarRuleList, home, sentenceDetail, sentenceList, wordDetail, wordList, publicApps } from 'resources/routing/routes'
 import AuthService from 'services/authService'
 import { container } from 'tsyringe'
 import './App.css'
@@ -33,8 +33,6 @@ const App: React.FC = () => {
 
 export default App
 
-// NB! Extracting <Suspense> into a function throws runtime exceptions (something with $$typeof)
-
 const WordListComponent = React.lazy(() => import('components/features/word/WordListComponent'))
 const WordDetailComponent = React.lazy(() => import('components/features/word/WordDetailComponent'))
 const SentenceListComponent = React.lazy(() => import('components/features/sentence/SentenceListComponent'))
@@ -50,7 +48,7 @@ const createAuthorisedUi = () => (
 
 			{/* Sentences */}
 			<Route path={sentenceList} component={SentenceListComponent} exact />
-			<Route path={sentenceDetail} component={SentenceDetailComponent} />
+			<Route path={sentenceDetail} component={SentenceDetailComponent} exact />
 
 			{/* GrammarRules */}
 			<Route path={grammarRuleList} component={GrammarRuleListComponent} exact />
@@ -59,6 +57,13 @@ const createAuthorisedUi = () => (
 	</Suspense>
 )
 
+const PublicHomepageComponent = React.lazy(() => import('components/public/PublicHomepageComponent'))
+const PublicAppsComponent = React.lazy(() => import('components/public/PublicAppsComponent'))
 const createUnauthorisedUi = () => (
-	<div>Not Signed In</div>
+	<Suspense fallback={<div></div>}>
+		<Switch>
+			<Route path={home} component={PublicHomepageComponent} exact />
+			<Route path={publicApps} component={PublicAppsComponent} exact />
+		</Switch>
+	</Suspense>
 )
