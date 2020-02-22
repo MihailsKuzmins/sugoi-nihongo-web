@@ -1,4 +1,5 @@
 export const home = '/'
+export const pageNotFound = '/page-not-found'
 
 // Words
 export const wordList = '/words'

@@ -33,6 +33,8 @@ const App: React.FC = () => {
 
 export default App
 
+const PageNotFoundComponent = React.lazy(() => import('components/system/PageNotFoundComponent'))
+
 const WordListComponent = React.lazy(() => import('components/features/word/WordListComponent'))
 const WordDetailComponent = React.lazy(() => import('components/features/word/WordDetailComponent'))
 const SentenceListComponent = React.lazy(() => import('components/features/sentence/SentenceListComponent'))
@@ -58,6 +60,8 @@ const createAuthorisedUi = () => (
 
 			{/* Auth */}
 			<Route path={authAccount} component={AuthAccountComponent} exact />
+
+			<Route component={PageNotFoundComponent} />
 		</Switch>
 	</Suspense>
 )
@@ -76,6 +80,8 @@ const createUnauthorisedUi = () => (
 			{/* Auth */}
 			<Route path={authSignIn} component={AuthSignInComponent} exact />
 			<Route path={authSignUp} component={authSignUpComponent} exact />
+
+			<Route component={PageNotFoundComponent} />
 		</Switch>
 	</Suspense>
 )
