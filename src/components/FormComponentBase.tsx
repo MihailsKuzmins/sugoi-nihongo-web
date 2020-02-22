@@ -80,7 +80,7 @@ export default abstract class FormComponentBase<TProps extends Props> extends Re
 		switch (error.constructor) {
 			case FirestoreConstraintError:
 				const e = error as FirestoreConstraintError
-				this.mFormAlert.alertMessage = `The same entry already exists: "${e.value}"`
+				this.mFormAlert.alertError(`The same entry already exists: "${e.value}"`)
 				break
 			default:
 				throw error

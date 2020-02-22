@@ -8,6 +8,9 @@ export const wordsCollection = 'words'
 export const sentencesCollection = 'sentences'
 export const grammarRulesCollection = 'grammarRules'
 
+// Common props
+export const documentUserId = 'userId'
+
 // Word
 export const wordDateCreated = 'dateCreated'
 export const wordDateLastAccessed = 'dateLastAccessed'

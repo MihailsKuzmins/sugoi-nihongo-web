@@ -14,5 +14,10 @@ export const grammarRuleDetail = grammarRuleList + '/:grammarRuleId'
 
 // Public
 export const publicApps = '/apps'
+
+// Auth - Public
 export const authSignIn = '/sign-in'
 export const authSignUp = '/sign-up'
+
+// Auth - Private
+export const authAccount = '/account'

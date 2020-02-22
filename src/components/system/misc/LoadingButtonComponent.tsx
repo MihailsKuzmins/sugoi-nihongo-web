@@ -63,6 +63,14 @@ export class LoadingButton {
 	}
 
 	public get isLoadingObservable() { return this.mIsLoadingObservable }
+
+	public start() {
+		this.isLoading = true
+	}
+
+	public stop() {
+		this.isLoading = false
+	}
 }
 
 interface Props {

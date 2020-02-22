@@ -5,20 +5,23 @@ import './PublicAppsComponent.css'
 import { authSignIn } from 'resources/routing/routes'
 import { linkInNewTabProps } from 'resources/constants/uiConstants'
 import { apacheLicence2 } from 'resources/misc/licenceTypes'
+import { Link } from 'react-router-dom'
 
 const PublicAppsComponent: React.FC = () => {
 	const publicReposId = 'public-repositories'
 
 	const apps = [{
 		icon: getOnGooglePlay,
+		alt: 'get-on-google-play',
 		link: 'https://play.google.com/store/apps/details?id=jp.mihailskuzmins.sugoinihongoapp',
 		text: 'Download the official app for Android from the Google Play',
-		props: linkInNewTabProps
+		isInternal: false
 	}, {
 		icon: signInSugoiNihongo,
+		alt: 'sign-in-sugoi-nihongo',
 		link: authSignIn,
 		text: 'Use the official web application',
-		props: {}
+		isInternal: true
 	}]
 
 	const publicRepos = [{
@@ -39,14 +42,20 @@ const PublicAppsComponent: React.FC = () => {
 			</div>
 			<div className="col-12 row">
 				{
-					apps.map((x, i) => (
-						<div className="text-center col-12 col-sm-6" key={i}>
-							<a href={x.link} {...x.props}>
-								<img src={x.icon} alt="get-on-google-play" className="app-icon col-12"/>
-							</a>
-							<p className="mt-3">{x.text}</p>
-						</div>
-					))
+					apps.map((x, i) => {
+						const img = <img src={x.icon} alt={x.alt} className="app-icon col-12"/>
+
+						return (
+							<div className="text-center col-12 col-sm-6" key={i}>
+								{
+									x.isInternal
+										? (<Link to={x.link}>{img}</Link>)
+										: (<a href={x.link} {...linkInNewTabProps}>{img}</a>)
+								}
+								<p className="mt-3">{x.text}</p>
+							</div>
+						)
+					})
 				}
 			</div>
 			<div id={publicReposId} className="col-12 mt-3">

@@ -1,8 +1,8 @@
-import Octicon, { KebabHorizontal, Gear, Person, Icon } from '@primer/octicons-react'
+import Octicon, { Gear, Icon, KebabHorizontal, Person, SignOut } from '@primer/octicons-react'
 import useGlobalState from 'helpers/useGlobalState'
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { grammarRuleList, home, sentenceList, wordList, publicApps } from 'resources/routing/routes'
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
+import { authAccount, authSignIn, authSignUp, grammarRuleList, home, publicApps, sentenceList, wordList } from 'resources/routing/routes'
 import AuthService from 'services/authService'
 import { container } from 'tsyringe'
 
@@ -16,7 +16,7 @@ const navLinksUnauth: RouteLink[] = [
 	{ path: publicApps, label: 'Apps' }
 ]
 
-const NavBarComponent: React.FC = () => {
+const NavBarComponent: React.FC<RouteComponentProps> = (props) => {
 	const authService = container.resolve(AuthService)
 	const [isAuth, setIsAuth] = useGlobalState('isAuthenticated')
 
@@ -24,8 +24,13 @@ const NavBarComponent: React.FC = () => {
 		console.log('settings')
 	}
 
-	const handleAccount = () => {
-		console.log('account')
+	const handleAccount = () =>
+		props.history.push(authAccount)
+
+	const handleSignOutAsync = async () => {
+		await authService.signOutAsync()
+		setIsAuth(false)
+		props.history.replace(home)
 	}
 
 	return (
@@ -45,6 +50,18 @@ const NavBarComponent: React.FC = () => {
 						))
 					}
 				</ul>
+				{!isAuth &&
+					<div>
+						<ul className="navbar-nav">
+							<li className="nav-item">
+								<Link className="nav-link" to={authSignIn}>Sign in</Link>
+							</li>
+							<li className="nav-item">
+								<Link className="nav-link" to={authSignUp}>Sign up</Link>
+							</li>
+						</ul>
+					</div>
+				}
 				<div className="dropdown">
 					<div className="btn-group dropleft">
 						<button type="button" className="close px-2 py-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -52,7 +69,13 @@ const NavBarComponent: React.FC = () => {
 						</button>
 						<div className="dropdown-menu">
 							{createOverflowMenuItem('Settings', Gear, handleSettings)}
-							{isAuth && createOverflowMenuItem('Account', Person, handleAccount)}
+							{isAuth &&
+								<div>
+									{createOverflowMenuItem('Account', Person, handleAccount)}
+									<div className="dropdown-divider"></div>
+									{createOverflowMenuItem('Sign out', SignOut, handleSignOutAsync)}
+								</div>
+							}
 						</div>
 					</div>
 				</div>
@@ -61,7 +84,7 @@ const NavBarComponent: React.FC = () => {
 	)
 }
 
-export default NavBarComponent
+export default withRouter(NavBarComponent)
 
 interface RouteLink {
 	path: string,

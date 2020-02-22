@@ -152,6 +152,10 @@ export abstract class ItemBase<TValue> implements Item, Disposable {
 	public get isDisabledObservable() { return this.mIsDisabledObservable }
 	public get isValidObservable() { return this.mIsValidObservable }
 
+	public addValidationTrigger<TAny>(observable: Observable<TAny>) {
+		this.mValidationContext.addValidationTrigger(observable)
+	}
+
 	protected addRule(rule: RuleBase<TValue>) {
 		this.mValidationContext.addRule(rule)
 	}

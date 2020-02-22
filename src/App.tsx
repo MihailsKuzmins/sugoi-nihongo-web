@@ -5,7 +5,7 @@ import NavBarComponent from 'components/system/NavBarComponent'
 import useGlobalState from 'helpers/useGlobalState'
 import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { grammarRuleDetail, grammarRuleList, home, sentenceDetail, sentenceList, wordDetail, wordList, publicApps } from 'resources/routing/routes'
+import { authAccount, authSignIn, authSignUp, grammarRuleDetail, grammarRuleList, home, publicApps, sentenceDetail, sentenceList, wordDetail, wordList } from 'resources/routing/routes'
 import AuthService from 'services/authService'
 import { container } from 'tsyringe'
 import './App.css'
@@ -39,6 +39,8 @@ const SentenceListComponent = React.lazy(() => import('components/features/sente
 const SentenceDetailComponent = React.lazy(() => import('components/features/sentence/SentenceDetailComponent'))
 const GrammarRuleListComponent = React.lazy(() => import('components/features/grammarRule/GrammarRuleListComponent'))
 const GrammarRuleDetailComponent = React.lazy(() => import('components/features/grammarRule/GrammarRuleDetailComponent'))
+const AuthAccountComponent = React.lazy(() => import('components/auth/AuthAccountComponent'))
+
 const createAuthorisedUi = () => (
 	<Suspense fallback={<div></div>}>
 		<Switch>
@@ -53,17 +55,27 @@ const createAuthorisedUi = () => (
 			{/* GrammarRules */}
 			<Route path={grammarRuleList} component={GrammarRuleListComponent} exact />
 			<Route path={grammarRuleDetail} component={GrammarRuleDetailComponent} exact />
+
+			{/* Auth */}
+			<Route path={authAccount} component={AuthAccountComponent} exact />
 		</Switch>
 	</Suspense>
 )
 
 const PublicHomepageComponent = React.lazy(() => import('components/public/PublicHomepageComponent'))
 const PublicAppsComponent = React.lazy(() => import('components/public/PublicAppsComponent'))
+const AuthSignInComponent = React.lazy(() => import('components/auth/AuthSignInComponent'))
+const authSignUpComponent = React.lazy(() => import('components/auth/AuthSignUpComponent'))
+
 const createUnauthorisedUi = () => (
 	<Suspense fallback={<div></div>}>
 		<Switch>
 			<Route path={home} component={PublicHomepageComponent} exact />
 			<Route path={publicApps} component={PublicAppsComponent} exact />
+
+			{/* Auth */}
+			<Route path={authSignIn} component={AuthSignInComponent} exact />
+			<Route path={authSignUp} component={authSignUpComponent} exact />
 		</Switch>
 	</Suspense>
 )

@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { map, startWith } from 'rxjs/operators'
 
 export default class SourceList<T> {
 	private readonly mArray: T[] = []
@@ -7,7 +7,10 @@ export default class SourceList<T> {
 
 	public readonly collectionChanged = this.mCollectionChangedSubject
 		.asObservable()
-		.pipe(map(_ => this.mArray))
+		.pipe(
+			map(_ => this.mArray),
+			startWith(this.mArray)
+		)
 
 	add(item: T) {
 		this.mArray.push(item)

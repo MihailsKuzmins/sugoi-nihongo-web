@@ -40,11 +40,11 @@ export default class InputItemComponent extends ItemComponentBase<string, Props,
 
 export class InputItem extends ItemBase<string> {
 	constructor(
-		label: string,
+		label: string | undefined,
 		public readonly id: string,
 		public readonly placeholder: string,
 		public readonly inputType: InputType = InputType.Text) {
-		super(label, '')
+		super(label ?? '', '')
 	}
 
 	public setMaxLength(maxLength: number) {

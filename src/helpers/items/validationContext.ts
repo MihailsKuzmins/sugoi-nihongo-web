@@ -4,11 +4,12 @@ import RuleBase from 'helpers/items/rules/ruleBase'
 import SourceList from 'helpers/rx/sourceList'
 import Disposable from 'models/system/disposable'
 import { combineLatest, Observable, ReplaySubject } from 'rxjs'
-import { distinctUntilChanged, map, publish, startWith } from 'rxjs/operators'
+import { distinctUntilChanged, map, publish, mergeAll, switchAll, startWith } from 'rxjs/operators'
 
 export default class ValidationContext<T> implements Disposable {
 	private readonly mDisposable = new SubDisposable()
 	private readonly mRuleSource = new SourceList<RuleBase<T>>()
+	private readonly mValidationTriggerSource = new SourceList<Observable<void>>()
 
 	private readonly mIsValidSibject = new ReplaySubject<boolean>(1)
 	private readonly mErrorMessageSubject = new ReplaySubject<string | undefined>()
@@ -17,10 +18,18 @@ export default class ValidationContext<T> implements Disposable {
 	private mErrorMessage: string | undefined
 
 	constructor(valueObservable: Observable<T>) {
+		const validationTriggerObservable = this.mValidationTriggerSource.collectionChanged
+			.pipe(
+				mergeAll(),
+				switchAll(),
+				startWith(undefined)
+			)
+
 		const ruleObservable = publish<RuleBase<T> | undefined>()(
 			combineLatest(
-				valueObservable,
-				this.mRuleSource.collectionChanged.pipe(startWith([]))
+				valueObservable.pipe(distinctUntilChanged()),
+				this.mRuleSource.collectionChanged,
+				validationTriggerObservable
 			).pipe(
 				map(x => x[1].firstOrDefault<RuleBase<T>>(y => !y.validate(x[0])) ),
 			))
@@ -64,6 +73,10 @@ export default class ValidationContext<T> implements Disposable {
 
 	public addRules(...rules: RuleBase<T>[]) {
 		this.mRuleSource.addMany(...rules)
+	}
+
+	public addValidationTrigger<TAny>(observable: Observable<TAny>) {
+		this.mValidationTriggerSource.add(observable.pipe(map(_ => undefined)))
 	}
 
 	public dispose() {

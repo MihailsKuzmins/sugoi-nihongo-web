@@ -3,10 +3,14 @@ import 'firebase/firestore'
 import ExistingDataSaver from 'helpers/dataSavers/existingDataSaver'
 import NewDataSaver from 'helpers/dataSavers/newDataSaver'
 import { LooseObject } from 'models/system/looseObject'
-import { defaultBool, defaultDate, defaultNumber } from 'resources/constants/firestoreConstants'
+import { defaultBool, defaultDate, defaultNumber, documentUserId } from 'resources/constants/firestoreConstants'
 import { MandatoryProps, QueryFunc, SnapshotFunc, SnapshotsFunc, Timestamp } from 'resources/types'
+import { container } from 'tsyringe'
+import AuthService from 'services/authService'
 
 export default abstract class FirestoreServiceBase {
+	private static readonly mAuthService = container.resolve(AuthService)
+
 	private static get database() { return firebase.firestore() }
 
 	protected static readonly subscribeToCollection = (collection: string, queryFunc: QueryFunc, snapshotsFunc: SnapshotsFunc) =>
@@ -55,7 +59,9 @@ export default abstract class FirestoreServiceBase {
 
 	private static readonly createCollectionQuery = (collection: string, queryFunc: QueryFunc) => {
 		const collectionRef = FirestoreServiceBase.database.collection(collection)
-		return queryFunc?.(collectionRef) ?? collectionRef
+		const query = queryFunc?.(collectionRef) ?? collectionRef
+
+		return query.where(documentUserId, '==', FirestoreServiceBase.mAuthService.userId)
 	}
 
 	private static readonly cleanSaveData = (saveData: LooseObject, isNewEntry: boolean, mandatpryProps: MandatoryProps) => {
