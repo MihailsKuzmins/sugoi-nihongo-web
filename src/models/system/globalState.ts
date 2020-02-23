@@ -1,3 +1,4 @@
 export default interface GlobalState {
-	isAuthenticated: boolean
+	isAuthenticated: boolean,
+	isNightMode: boolean
 }

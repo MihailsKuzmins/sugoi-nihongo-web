@@ -14,8 +14,9 @@ import { InputType } from 'resources/ui/inputType'
 import { skip } from 'rxjs/operators'
 import AuthService from 'services/authService'
 import { container } from 'tsyringe'
+import withNightMode, { NightModeProps } from 'components/_hoc/withNightMode'
 
-export default class AuthSignUpComponent extends React.Component<Props> {
+class AuthSignUpComponent extends React.Component<Props> {
 	private readonly mAuthService = container.resolve(AuthService)
 
 	private readonly mFormAlert = new FormAlert()
@@ -49,11 +50,11 @@ export default class AuthSignUpComponent extends React.Component<Props> {
 			<FormAlertComponent alert={this.mFormAlert} />
 			<form className="col-10 col-sm-8 col-md-6 m-auto" onSubmit={this.handleSubmitAsync}>
 				<div className="form-group">
-					<InputItemComponent item={this.mEmailItem} />
-					<InputItemComponent item={this.mPasswordItem} />
-					<InputItemComponent item={this.mPasswordConfirmItem} />
+					<InputItemComponent item={this.mEmailItem} isNightMode={this.props.isNightMode} />
+					<InputItemComponent item={this.mPasswordItem} isNightMode={this.props.isNightMode} />
+					<InputItemComponent item={this.mPasswordConfirmItem} isNightMode={this.props.isNightMode} />
 				</div>
-				<LoadingButtonComponent button={this.mLoadingButton} />
+				<LoadingButtonComponent button={this.mLoadingButton} isNightMode={this.props.isNightMode} />
 			</form>
 		</div>
 	)
@@ -87,4 +88,7 @@ export default class AuthSignUpComponent extends React.Component<Props> {
 	}
 }
 
-interface Props extends RouteComponentProps {}
+export default withNightMode(AuthSignUpComponent)
+
+interface BasicProps extends RouteComponentProps {}
+interface Props extends NightModeProps, BasicProps {}

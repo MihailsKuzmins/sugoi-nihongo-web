@@ -4,6 +4,7 @@ import InputItemComponent, { InputItem } from 'components/system/items/InputItem
 import TextAreaItemComponent, { TextAreaItem } from 'components/system/items/TextAreaItemComponent'
 import CloseModalButtonComponent, { CloseModalButton } from 'components/system/misc/CloseModalButtonComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
+import { NightModeProps } from 'components/_hoc/withNightMode'
 import { hasNoKanji } from 'functions/japaneseFunctions'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import KanaOrKanjiRule from 'helpers/items/rules/kanaOrKanjiRule'
@@ -14,6 +15,7 @@ import { LooseObject } from 'models/system/looseObject'
 import WordDetailModel from 'models/word/wordDetailModel'
 import React from 'react'
 import { wordIsFavourite, wordIsStudiable, wordNotes, wordOriginal, wordTranscription, wordTranslation } from 'resources/constants/firestoreConstants'
+import { lightBackground, lightNavBarColor, lightTextBoldColor, lightTextColor, nightBackground, nightNavBarColor, nightTextBoldColor, nightTextColor } from 'resources/ui/colors'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 import WordService from 'services/wordService'
 import { container } from 'tsyringe'
@@ -74,39 +76,45 @@ export default class WordFormComponent extends FormComponentBase<Props> {
 		d.add(isTranscriptionDisabledDisp)
 	}
 
-	readonly render = () => (
-		<div className="modal fade m-0" id={this.props.formId} tabIndex={-1} role="dialog" aria-hidden="true">
-			<div className="modal-dialog" role="document">
-				<div className="modal-content">
-					<div className="modal-header">
-						<h5 className="modal-title">{this.props.title}</h5>
-						<CloseModalButtonComponent button={this.mCloseModalButton} />
-					</div>
-					<div className="modal-body">
-						{this.createFormAlertComponent()}
-						<form onSubmit={this.handleSubmitAsync}>
-							<InputItemComponent item={this.mOriginalItem} />
-							<InputItemComponent item={this.mTranslationItem} />
-							<InputItemComponent item={this.mTranscriptionItem} />
-							<TextAreaItemComponent item={this.mNotesItem} />
-							{this.props.word && this.renderControlsForExistingWord()}
-							<div className="modal-footer">
-								<LoadingButtonComponent button={this.mLoadingButton} />
-							</div>
-						</form>
+	public readonly render = () => {
+		const colors: Colors = this.props.isNightMode
+			? {bgColor: nightBackground, headerBgColor: nightNavBarColor, textColor: nightTextColor, textBoldColor: nightTextBoldColor}
+			: {bgColor: lightBackground, headerBgColor: lightNavBarColor, textColor: lightTextColor, textBoldColor: lightTextBoldColor}
+
+		return (
+			<div className="modal fade m-0" id={this.props.formId} tabIndex={-1} role="dialog" aria-hidden="true">
+				<div className="modal-dialog" role="document">
+					<div className="modal-content" style={{backgroundColor: colors.headerBgColor}}>
+						<div className="modal-header" style={{color: colors.textBoldColor}}>
+							<h5 className="modal-title">{this.props.title}</h5>
+							<CloseModalButtonComponent button={this.mCloseModalButton} isNightMode={this.props.isNightMode} />
+						</div>
+						<div className="modal-body" style={{backgroundColor: colors.bgColor}}>
+							{this.createFormAlertComponent()}
+							<form onSubmit={this.handleSubmitAsync}>
+								<InputItemComponent item={this.mOriginalItem} isNightMode={this.props.isNightMode} />
+								<InputItemComponent item={this.mTranslationItem} isNightMode={this.props.isNightMode} />
+								<InputItemComponent item={this.mTranscriptionItem} isNightMode={this.props.isNightMode} />
+								<TextAreaItemComponent item={this.mNotesItem} isNightMode={this.props.isNightMode} />
+								{this.props.word && this.renderControlsForExistingWord(this.props.isNightMode)}
+								<div className="modal-footer">
+									<LoadingButtonComponent button={this.mLoadingButton} isNightMode={this.props.isNightMode} />
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	)
+		)
+	}
 
-	private readonly renderControlsForExistingWord = () => (
+	private readonly renderControlsForExistingWord = (isNightMode: boolean) => (
 		<div className="row">
 			<div className="col-6">
-				<CheckboxItemComponent item={this.mIsStudiableItem} />
+				<CheckboxItemComponent item={this.mIsStudiableItem} isNightMode={isNightMode} />
 			</div>
 			<div className="col-6">
-				<CheckboxItemComponent item={this.mIsFavouriteItem} />
+				<CheckboxItemComponent item={this.mIsFavouriteItem} isNightMode={isNightMode} />
 			</div>
 		</div>
 	)
@@ -139,8 +147,15 @@ export default class WordFormComponent extends FormComponentBase<Props> {
 	}
 }
 
-interface Props {
+interface Props extends NightModeProps {
 	word: WordDetailModel | undefined,
 	formId: string,
 	title: string
+}
+
+interface Colors {
+	bgColor: string,
+	headerBgColor: string,
+	textColor: string,
+	textBoldColor: string
 }

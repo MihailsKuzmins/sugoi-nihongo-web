@@ -2,6 +2,8 @@ import ItemComponentBase, { ItemBase } from 'components/system/items/ItemCompone
 import MaxLengthRule from 'helpers/items/rules/maxLengthRule'
 import RuleBase from 'helpers/items/rules/ruleBase'
 import React from 'react'
+import { NightModeProps } from 'components/_hoc/withNightMode'
+import { nightTextColor, lightTextColor, nightTextBoldColor, lightTextBoldColor, nightBackground, lightBackground, lightInputDisabled, nightInputDisabled } from 'resources/ui/colors'
 
 export default class TextAreaItemComponent extends ItemComponentBase<string, Props, State> {
 	constructor(props: Props) {
@@ -16,11 +18,22 @@ export default class TextAreaItemComponent extends ItemComponentBase<string, Pro
 		const { id, label, placeholder, rows } = this.props.item
 		const textareaClassName = 'form-control' + (this.state.isValid ? '' : ' is-invalid')
 
+		const colors: Colors = this.props.isNightMode
+			? {textColor: nightTextColor, textBoldColor: nightTextBoldColor, bgColor: nightBackground, inputDisabled: nightInputDisabled}
+			: {textColor: lightTextColor, textBoldColor: lightTextBoldColor, bgColor: lightBackground, inputDisabled: lightInputDisabled}
+
+		const inputBgColor = this.state.isDisabled
+			? colors.inputDisabled
+			: colors.bgColor
+
 		return (
 			<div className="form-group">
-				<label className="float-left" htmlFor={id}>{label}:</label>
+				<label className="float-left" htmlFor={id} style={{color: colors.textColor}}>
+					{label}:
+				</label>
 				<textarea id={id} rows={rows} placeholder={placeholder} value={this.state.value} onChange={this.handleChange}
-					disabled={this.state.isDisabled} className={textareaClassName}/>
+					disabled={this.state.isDisabled} className={textareaClassName}
+					style={{backgroundColor: inputBgColor, color: colors.textBoldColor}} />
 
 				{!this.state.isValid && this.state.errorMessage &&
 					<div className="invalid-feedback text-left">
@@ -60,7 +73,7 @@ export class TextAreaItem extends ItemBase<string> {
 	}
 }
 
-interface Props {
+interface Props extends NightModeProps {
 	item: TextAreaItem
 }
 
@@ -69,4 +82,11 @@ interface State {
 	isDisabled: boolean,
 	isValid: boolean,
 	errorMessage: string | undefined
+}
+
+interface Colors {
+	textColor: string,
+	textBoldColor: string,
+	bgColor: string,
+	inputDisabled: string
 }

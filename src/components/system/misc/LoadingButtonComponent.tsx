@@ -2,6 +2,8 @@ import SubDisposable from 'helpers/disposable/subDisposable'
 import React from 'react'
 import { Observable, ReplaySubject } from 'rxjs'
 import { startWith } from 'rxjs/operators'
+import { NightModeProps } from 'components/_hoc/withNightMode'
+import { lightMode, darkMode } from 'resources/constants/uiConstants'
 
 export default class LoadingButtonComponent extends React.PureComponent<Props, State> {
 	private readonly mSubDisposable = new SubDisposable()
@@ -30,9 +32,10 @@ export default class LoadingButtonComponent extends React.PureComponent<Props, S
 	public readonly render = () => {
 		const { text, loadingText } = this.props.button
 		const isLoading = this.state.isLoading
+		const mode = this.props.isNightMode ? lightMode : darkMode
 
 		return (
-			<button type="submit" className="btn btn-outline-dark col-12" disabled={isLoading}>
+			<button type="submit" className={`btn btn-outline-${mode} col-12`} disabled={isLoading}>
 				{isLoading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
 				{isLoading ? loadingText : text}
 			</button>
@@ -73,7 +76,7 @@ export class LoadingButton {
 	}
 }
 
-interface Props {
+interface Props extends NightModeProps {
 	button: LoadingButton
 }
 

@@ -3,12 +3,14 @@ import InputItemComponent, { InputItem } from 'components/system/items/InputItem
 import TextAreaItemComponent, { TextAreaItem } from 'components/system/items/TextAreaItemComponent'
 import CloseModalButtonComponent, { CloseModalButton } from 'components/system/misc/CloseModalButtonComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
+import { NightModeProps } from 'components/_hoc/withNightMode'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import NotNullOrWhiteSpaceRule from 'helpers/items/rules/notNullOrWhiteSpaceRule'
 import GrammarRuleDetailModel from 'models/grammarRule/grammarRuleDetailModel'
 import { LooseObject } from 'models/system/looseObject'
 import React from 'react'
 import { grammarRuleBody, grammarRuleHeader } from 'resources/constants/firestoreConstants'
+import { lightBackground, lightNavBarColor, lightTextBoldColor, lightTextColor, nightBackground, nightNavBarColor, nightTextBoldColor, nightTextColor } from 'resources/ui/colors'
 import GrammarRuleService from 'services/grammarRuleService'
 import { container } from 'tsyringe'
 
@@ -47,27 +49,33 @@ export default class GrammarRuleFormComponent extends FormComponentBase<Props> {
 		d.add(isLoadingDisp)
 	}
 
-	readonly render = () => (
-		<div className="modal fade m-0" id={this.props.formId} tabIndex={-1} role="dialog" aria-hidden="true">
-			<div className="modal-dialog modal-xl" role="document">
-				<div className="modal-content">
-					<div className="modal-header">
-						<h5 className="modal-title">{this.props.title}</h5>
-						<CloseModalButtonComponent button={this.mCloseModalButton} />
-					</div>
-					<div className="modal-body">
-						<form onSubmit={this.handleSubmitAsync}>
-							<InputItemComponent item={this.mHeaderItem} />
-							<TextAreaItemComponent item={this.mBodyItem} />
-							<div className="modal-footer">
-								<LoadingButtonComponent button={this.mLoadingButton} />
-							</div>
-						</form>
+	readonly render = () => {
+		const colors: Colors = this.props.isNightMode
+			? {bgColor: nightBackground, headerBgColor: nightNavBarColor, textColor: nightTextColor, textBoldColor: nightTextBoldColor}
+			: {bgColor: lightBackground, headerBgColor: lightNavBarColor, textColor: lightTextColor, textBoldColor: lightTextBoldColor}
+
+		return (
+			<div className="modal fade m-0" id={this.props.formId} tabIndex={-1} role="dialog" aria-hidden="true">
+				<div className="modal-dialog modal-xl" role="document">
+					<div className="modal-content" style={{backgroundColor: colors.headerBgColor}}>
+						<div className="modal-header" style={{color: colors.textBoldColor}}>
+							<h5 className="modal-title">{this.props.title}</h5>
+							<CloseModalButtonComponent button={this.mCloseModalButton} isNightMode={this.props.isNightMode} />
+						</div>
+						<div className="modal-body" style={{backgroundColor: colors.bgColor}}>
+							<form onSubmit={this.handleSubmitAsync}>
+								<InputItemComponent item={this.mHeaderItem} isNightMode={this.props.isNightMode} />
+								<TextAreaItemComponent item={this.mBodyItem} isNightMode={this.props.isNightMode} />
+								<div className="modal-footer">
+									<LoadingButtonComponent button={this.mLoadingButton} isNightMode={this.props.isNightMode} />
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	)
+		)
+	}
 
 	protected readonly getSaveFields = () => [
 		{firestoreField: grammarRuleHeader, item: this.mHeaderItem},
@@ -89,8 +97,15 @@ export default class GrammarRuleFormComponent extends FormComponentBase<Props> {
 	}
 }
 
-interface Props {
+interface Props extends NightModeProps {
 	grammarRule: GrammarRuleDetailModel | undefined,
 	formId: string,
 	title: string
+}
+
+interface Colors {
+	bgColor: string,
+	headerBgColor: string,
+	textColor: string,
+	textBoldColor: string
 }

@@ -37,7 +37,7 @@ export default abstract class FirestoreServiceBase {
 			return
 
 		const dataSaver = isNewEntry
-			? new NewDataSaver(saveData)
+			? new NewDataSaver(saveData, FirestoreServiceBase.mAuthService.userId)
 			: new ExistingDataSaver(saveData, documentId!)
 
 		if (!dataSaver.checkData(mandatpryProps))

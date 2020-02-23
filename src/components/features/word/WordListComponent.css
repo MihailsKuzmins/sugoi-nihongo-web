@@ -1,24 +1,24 @@
 .mark {
 	border-left-style: solid;
-	border-left-width: 7px;
+	border-left-width: 7px !important;
 }
 
 .mark-excellent {
-	border-left-color: #5bff32;
+	border-left-color: #5bff32 !important;
 }
 
 .mark-good {
-	border-left-color: #fbff3d;
+	border-left-color: #fbff3d !important;
 }
 
 .mark-average {
-	border-left-color: #d46922;
+	border-left-color: #d46922 !important;
 }
 
 .mark-bad {
-	border-left-color: #f73b3b;
+	border-left-color: #f73b3b !important;
 }
 
 .mark-excluded {
-	border-left-color: #cccccc;
+	border-left-color: #cccccc !important;
 }

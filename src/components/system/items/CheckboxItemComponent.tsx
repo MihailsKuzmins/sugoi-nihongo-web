@@ -1,5 +1,7 @@
 import ItemComponentBase, { ItemBase } from 'components/system/items/ItemComponentBase'
+import { NightModeProps } from 'components/_hoc/withNightMode'
 import React from 'react'
+import { lightTextColor, nightTextColor } from 'resources/ui/colors'
 
 export default class CheckboxItemComponent extends ItemComponentBase<boolean, Props, State> {
 	constructor(props: Props) {
@@ -12,12 +14,15 @@ export default class CheckboxItemComponent extends ItemComponentBase<boolean, Pr
 
 	public readonly render = () => {
 		const { id, label } = this.props.item
+		const textColor = this.props.isNightMode
+			? nightTextColor
+			: lightTextColor
 
 		return (
 			<div className="custom-control custom-checkbox text-left">
 				<input id={id} checked={this.state.value} disabled={this.state.isDisabled} onChange={this.handleChange}
 					 value="" className="custom-control-input" type="checkbox" />
-				<label className="custom-control-label" htmlFor={id}>
+				<label className="custom-control-label" htmlFor={id} style={{color: textColor}}>
 					{label}
 				</label>
 			</div>
@@ -37,7 +42,7 @@ export class CheckboxItem extends ItemBase<boolean> {
 	}
 }
 
-interface Props {
+interface Props extends NightModeProps {
 	item: CheckboxItem
 }
 

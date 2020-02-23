@@ -4,8 +4,11 @@ import 'bootstrap/dist/css/bootstrap.css'
 import NavBarComponent from 'components/system/NavBarComponent'
 import useGlobalState from 'helpers/useGlobalState'
 import React, { Suspense } from 'react'
+import { Helmet } from 'react-helmet'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { localStorageIsNightMode } from 'resources/constants/localStorageConstants'
 import { authAccount, authSignIn, authSignUp, grammarRuleDetail, grammarRuleList, home, publicApps, sentenceDetail, sentenceList, wordDetail, wordList } from 'resources/routing/routes'
+import { lightBackground, nightBackground } from 'resources/ui/colors'
 import AuthService from 'services/authService'
 import { container } from 'tsyringe'
 import './App.css'
@@ -14,13 +17,25 @@ const authService = container.resolve(AuthService)
 
 const App: React.FC = () => {
 	const [isAuth, setIsAuth] = useGlobalState('isAuthenticated')
+	const [isNightMode, setIsNightMode] = useGlobalState('isNightMode')
+
+	const isNightModeSession =  localStorage.getItem(localStorageIsNightMode) === 'true'
+	if (isNightMode !== isNightModeSession)
+		setIsNightMode(isNightModeSession)
 	
 	if (isAuth !== authService.isAuthenticated)
 		setIsAuth(authService.isAuthenticated)
 
+	const bgColor = isNightMode
+		? nightBackground
+		: lightBackground
+
 	return (
 		<Router>
 			<div className="App">
+				<Helmet>
+					<style>{`body { background-color: ${bgColor}; }`}</style>
+				</Helmet>
 				<NavBarComponent />
 				{isAuth
 					? createAuthorisedUi()

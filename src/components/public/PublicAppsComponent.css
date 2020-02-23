@@ -1,6 +1,7 @@
 .app-icon {
 	max-width: 350px;
 	padding: 0 !important;
+	border-radius: 12px;
 }
 
 .public-repo-item {

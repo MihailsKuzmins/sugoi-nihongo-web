@@ -1,5 +1,7 @@
+import { NightModeProps } from 'components/_hoc/withNightMode'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import React from 'react'
+import { darkMode, lightMode } from 'resources/constants/uiConstants'
 import { Observable, ReplaySubject } from 'rxjs'
 import { startWith } from 'rxjs/operators'
 
@@ -27,11 +29,17 @@ export default class CloseModalButtonComponent extends React.PureComponent<Props
 		super.componentWillUnmount?.()
 	}
 
-	public readonly render = () => (
-		<button type="button" className="close" data-dismiss="modal" aria-label="Close" disabled={this.state.isDisabled}>
-			<span aria-hidden="true">&times;</span>
-		</button>
-	)
+	public readonly render = () => {
+		const textMode = this.props.isNightMode
+			? lightMode
+			: darkMode
+
+		return (
+			<button type="button" className={`close text-${textMode}`} data-dismiss="modal" aria-label="Close" disabled={this.state.isDisabled}>
+				<span aria-hidden="true">&times;</span>
+			</button>
+		)
+	}
 }
 
 export class CloseModalButton {
@@ -56,7 +64,7 @@ export class CloseModalButton {
 	public get isDisabledObservable() { return this.mIsDisabledObservable }
 }
 
-interface Props {
+interface Props extends NightModeProps {
 	button: CloseModalButton
 }
 
