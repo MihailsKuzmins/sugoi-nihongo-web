@@ -7,6 +7,8 @@
 		"**/CVS": true,
 		"**/.DS_Store": true,
 		"**/node_modules/": true,
+		".firebase/": true,
+		"build/": true,
 		".vscode/": true
 	}
 }

@@ -14,7 +14,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import FirebaseAuthError from 'resources/errors/firebaseAuthError'
 import { AuthResult } from 'resources/misc/authResult'
 import { home } from 'resources/routing/routes'
-import { lightTextColor, nightTextColor } from 'resources/ui/colors'
+import { lightBackground, lightNavBarColor, lightTextBoldColor, lightTextColor, nightBackground, nightNavBarColor, nightTextBoldColor, nightTextColor } from 'resources/ui/colors'
 import { InputType } from 'resources/ui/inputType'
 import { ReplaySubject } from 'rxjs'
 import AuthService from 'services/authService'
@@ -72,9 +72,9 @@ class SignInComponentImpl extends React.Component<Props> {
 
 	public readonly render = () => {
 		const helpLinks = [this.mForgotPasswordText, this.mResendEmailVerification]
-		const textColor = this.props.isNightMode
-			? nightTextColor
-			: lightTextColor
+		const colors: Colors = this.props.isNightMode
+			? {bgColor: nightBackground, headerBgColor: nightNavBarColor, textColor: nightTextColor, textBoldColor: nightTextBoldColor}
+			: {bgColor: lightBackground, headerBgColor: lightNavBarColor, textColor: lightTextColor, textBoldColor: lightTextBoldColor}
 
 		return (
 			<div className="container mt-2">
@@ -88,7 +88,7 @@ class SignInComponentImpl extends React.Component<Props> {
 					<div className="row mt-3">
 						{
 							helpLinks.map((x, i) => (
-								<div className="col-12" key={i} style={{color: textColor}}>
+								<div className="col-12" key={i} style={{color: colors.textColor}}>
 									<ClickableTextComponent clickableText={x} />
 								</div>
 							))
@@ -99,7 +99,8 @@ class SignInComponentImpl extends React.Component<Props> {
 					formId={this.mForgotPasswordEmailFormId}
 					authService={this.mAuthService}
 					completionSource={() => this.mForgotPasswordEmailCompletionSource}
-					isNightMode={this.props.isNightMode} />
+					isNightMode={this.props.isNightMode}
+					colors={colors} />
 			</div>
 		)
 	}
@@ -170,11 +171,11 @@ class ForgotPasswordEmailFormComponent extends React.Component<ForgotPasswordFor
 	public readonly render = () => (
 		<div className="modal fade m-0" id={this.props.formId} tabIndex={-1} role="dialog" aria-labelledby="forgotPasswordForm" aria-hidden="true">
 			<div className="modal-dialog" role="document">
-				<div className="modal-content">
-					<div className="modal-header">
+				<div className="modal-content" style={{backgroundColor: this.props.colors.headerBgColor}}>
+					<div className="modal-header" style={{color: this.props.colors.textBoldColor}}>
 						<h5 className="modal-title">Verify your E-mail</h5>
 					</div>
-					<div className="modal-body">
+					<div className="modal-body" style={{backgroundColor: this.props.colors.bgColor, color: this.props.colors.textColor}}>
 						<p>Please enter your E-mail address. We will send an e-mail with further instructions</p>
 						<FormAlertComponent alert={this.mFormAlert} />
 						<form onSubmit={this.handleSubmitAsync}>
@@ -220,5 +221,13 @@ class ForgotPasswordEmailFormComponent extends React.Component<ForgotPasswordFor
 interface ForgotPasswordFormProps extends NightModeProps {
 	formId: string,
 	authService: AuthService,
-	completionSource: () => PromiseCompletionSource<string | undefined>
+	completionSource: () => PromiseCompletionSource<string | undefined>,
+	colors: Colors
+}
+
+interface Colors {
+	bgColor: string,
+	headerBgColor: string,
+	textColor: string,
+	textBoldColor: string
 }
