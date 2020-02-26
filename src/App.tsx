@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 import NavBarComponent from 'components/system/NavBarComponent'
+import SettingsFormComponent from 'components/system/NavBarSettingsComponent'
 import useGlobalState from 'helpers/useGlobalState'
 import React, { Suspense } from 'react'
 import { Helmet } from 'react-helmet'
@@ -26,6 +27,8 @@ const App: React.FC = () => {
 	if (isAuth !== authService.isAuthenticated)
 		setIsAuth(authService.isAuthenticated)
 
+	const settingsFormId = 'settingsForm'
+
 	const bgColor = isNightMode
 		? nightBackground
 		: lightBackground
@@ -36,7 +39,8 @@ const App: React.FC = () => {
 				<Helmet>
 					<style>{`body { background-color: ${bgColor}; }`}</style>
 				</Helmet>
-				<NavBarComponent />
+				<NavBarComponent settingsFormId={settingsFormId} />
+				<SettingsFormComponent formId={settingsFormId} />
 				{isAuth
 					? createAuthorisedUi()
 					: createUnauthorisedUi()
