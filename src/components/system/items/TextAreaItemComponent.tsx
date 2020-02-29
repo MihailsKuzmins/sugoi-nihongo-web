@@ -2,8 +2,6 @@ import ItemComponentBase, { ItemBase } from 'components/system/items/ItemCompone
 import MaxLengthRule from 'helpers/items/rules/maxLengthRule'
 import RuleBase from 'helpers/items/rules/ruleBase'
 import React from 'react'
-import { NightModeProps } from 'components/_hoc/withNightMode'
-import { nightTextColor, lightTextColor, nightTextBoldColor, lightTextBoldColor, nightBackground, lightBackground, lightInputDisabled, nightInputDisabled } from 'resources/ui/colors'
 
 export default class TextAreaItemComponent extends ItemComponentBase<string, Props, State> {
 	constructor(props: Props) {
@@ -16,28 +14,24 @@ export default class TextAreaItemComponent extends ItemComponentBase<string, Pro
 
 	public readonly render = () => {
 		const { id, label, placeholder, rows } = this.props.item
-		const textareaClassName = 'form-control' + (this.state.isValid ? '' : ' is-invalid')
-
-		const colors: Colors = this.props.isNightMode
-			? {textColor: nightTextColor, textBoldColor: nightTextBoldColor, bgColor: nightBackground, inputDisabled: nightInputDisabled}
-			: {textColor: lightTextColor, textBoldColor: lightTextBoldColor, bgColor: lightBackground, inputDisabled: lightInputDisabled}
-
-		const inputBgColor = this.state.isDisabled
-			? colors.inputDisabled
-			: colors.bgColor
+		const { isDisabled, isValid, value, errorMessage } = this.state
+		const { textColor, textColorBold, backgroundColor, inputBackgroundColorDisabled} = this.themeService
+		
+		const textareaClassName = 'form-control' + (isValid ? '' : ' is-invalid')
+		const inputBgColor = isDisabled	? inputBackgroundColorDisabled : backgroundColor
 
 		return (
 			<div className="form-group">
-				<label className="float-left" htmlFor={id} style={{color: colors.textColor}}>
+				<label className="float-left" htmlFor={id} style={{color: textColor}}>
 					{label}:
 				</label>
-				<textarea id={id} rows={rows} placeholder={placeholder} value={this.state.value} onChange={this.handleChange}
-					disabled={this.state.isDisabled} className={textareaClassName}
-					style={{backgroundColor: inputBgColor, color: colors.textBoldColor}} />
+				<textarea id={id} rows={rows} placeholder={placeholder} value={value} onChange={this.handleChange}
+					disabled={isDisabled} className={textareaClassName}
+					style={{backgroundColor: inputBgColor, color: textColorBold}} />
 
-				{!this.state.isValid && this.state.errorMessage &&
+				{!isValid && errorMessage &&
 					<div className="invalid-feedback text-left">
-						{this.state.errorMessage}
+						{errorMessage}
 					</div>
 				}
 			</div>
@@ -73,7 +67,7 @@ export class TextAreaItem extends ItemBase<string> {
 	}
 }
 
-interface Props extends NightModeProps {
+interface Props {
 	item: TextAreaItem
 }
 
@@ -82,11 +76,4 @@ interface State {
 	isDisabled: boolean,
 	isValid: boolean,
 	errorMessage: string | undefined
-}
-
-interface Colors {
-	textColor: string,
-	textBoldColor: string,
-	bgColor: string,
-	inputDisabled: string
 }

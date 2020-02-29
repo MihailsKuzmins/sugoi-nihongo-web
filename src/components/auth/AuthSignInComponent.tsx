@@ -2,51 +2,40 @@ import InputItemComponent, { InputItem } from 'components/system/items/InputItem
 import ClickableTextComponent, { ClickableText } from 'components/system/misc/ClickableTextComponent'
 import FormAlertComponent, { FormAlert } from 'components/system/misc/FormAlertComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
-import { NightModeProps } from 'components/_hoc/withNightMode'
 import { getAuthResultMessage } from 'functions/auth/authResultFunctions'
 import { hideModal, setModalNonCancellable, showModal } from 'functions/uiFunctions'
 import NotNullOrWhiteSpaceRule from 'helpers/items/rules/notNullOrWhiteSpaceRule'
 import useGlobalState from 'helpers/useGlobalState'
 import SignInLocationState from 'models/auth/signInLocationState'
 import { PromiseCompletionSource } from 'promise-completion-source'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import FirebaseAuthError from 'resources/errors/firebaseAuthError'
 import { AuthResult } from 'resources/misc/authResult'
 import { home } from 'resources/routing/routes'
-import { lightBackground, lightNavBarColor, lightTextBoldColor, lightTextColor, nightBackground, nightNavBarColor, nightTextBoldColor, nightTextColor } from 'resources/ui/colors'
 import { InputType } from 'resources/ui/inputType'
-import { ReplaySubject } from 'rxjs'
 import AuthService from 'services/authService'
+import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 
 const AuthSignInComponent: React.FC<RouteComponentProps<{}, {}, SignInLocationState>> = (props) => {
 	const message = props.location.state?.message
 
-	const isAuthSubject = new ReplaySubject<boolean>(1)
 	const [, setIsAuth] = useGlobalState('isAuthenticated')
-	const [isNightMode,] = useGlobalState('isNightMode')
 
-	useEffect(() => {
-		const isAuthDisp = isAuthSubject
-			.subscribe(x => {
-				setIsAuth(x)
-				props.history.replace(home)
-			})
+	function handleIsAuth (x: boolean) {
+		setIsAuth(x)
+		props.history.replace(home)
+	}
 
-		return () => {
-			isAuthDisp.unsubscribe()
-			isAuthSubject.unsubscribe()
-		}
-	})
-
-	return <SignInComponentImpl setIsAuth={x => isAuthSubject.next(x)} message={message} isNightMode={isNightMode} />
+	return <SignInComponentImpl setIsAuth={x => handleIsAuth(x)} message={message} />
 }
 
 export default AuthSignInComponent
 
 class SignInComponentImpl extends React.Component<Props> {
 	private readonly mAuthService = container.resolve(AuthService)
+	private readonly mThemeService = container.resolve(ThemeService)
 	private readonly mForgotPasswordEmailFormId = 'forgotPasswordEmailForm'
 
 	private readonly mFormAlert = new FormAlert()
@@ -72,23 +61,20 @@ class SignInComponentImpl extends React.Component<Props> {
 
 	public readonly render = () => {
 		const helpLinks = [this.mForgotPasswordText, this.mResendEmailVerification]
-		const colors: Colors = this.props.isNightMode
-			? {bgColor: nightBackground, headerBgColor: nightNavBarColor, textColor: nightTextColor, textBoldColor: nightTextBoldColor}
-			: {bgColor: lightBackground, headerBgColor: lightNavBarColor, textColor: lightTextColor, textBoldColor: lightTextBoldColor}
 
 		return (
 			<div className="container mt-2">
 				<FormAlertComponent alert={this.mFormAlert} />
 				<form className="col-10 col-sm-8 col-md-6 m-auto" onSubmit={this.handleSubmitAsync}>
 					<div className="form-group">
-						<InputItemComponent item={this.mEmailItem} isNightMode={this.props.isNightMode} />
-						<InputItemComponent item={this.mPasswordItem} isNightMode={this.props.isNightMode} />
+						<InputItemComponent item={this.mEmailItem} />
+						<InputItemComponent item={this.mPasswordItem} />
 					</div>
-					<LoadingButtonComponent button={this.mLoadingButton} isNightMode={this.props.isNightMode} />
+					<LoadingButtonComponent button={this.mLoadingButton} />
 					<div className="row mt-3">
 						{
 							helpLinks.map((x, i) => (
-								<div className="col-12" key={i} style={{color: colors.textColor}}>
+								<div className="col-12" key={i} style={{color: this.mThemeService.textColor}}>
 									<ClickableTextComponent clickableText={x} />
 								</div>
 							))
@@ -97,10 +83,7 @@ class SignInComponentImpl extends React.Component<Props> {
 				</form>
 				<ForgotPasswordEmailFormComponent
 					formId={this.mForgotPasswordEmailFormId}
-					authService={this.mAuthService}
-					completionSource={() => this.mForgotPasswordEmailCompletionSource}
-					isNightMode={this.props.isNightMode}
-					colors={colors} />
+					completionSource={() => this.mForgotPasswordEmailCompletionSource} />
 			</div>
 		)
 	}
@@ -151,12 +134,15 @@ class SignInComponentImpl extends React.Component<Props> {
 	}
 }
 
-interface Props extends NightModeProps {
+interface Props {
 	setIsAuth: (isAuth: boolean) => void,
 	message: string | undefined
 }
 
 class ForgotPasswordEmailFormComponent extends React.Component<ForgotPasswordFormProps> {
+	private readonly mAuthService = container.resolve(AuthService)
+	private readonly mThemeService = container.resolve(ThemeService)
+
 	private readonly mFormAlert = new FormAlert()
 	private readonly mLoadingButton = new LoadingButton('Send verification', 'Sending...')
 
@@ -171,18 +157,18 @@ class ForgotPasswordEmailFormComponent extends React.Component<ForgotPasswordFor
 	public readonly render = () => (
 		<div className="modal fade m-0" id={this.props.formId} tabIndex={-1} role="dialog" aria-labelledby="forgotPasswordForm" aria-hidden="true">
 			<div className="modal-dialog" role="document">
-				<div className="modal-content" style={{backgroundColor: this.props.colors.headerBgColor}}>
-					<div className="modal-header" style={{color: this.props.colors.textBoldColor}}>
+				<div className="modal-content" style={{backgroundColor: this.mThemeService.backgroundColorDark}}>
+					<div className="modal-header" style={{color: this.mThemeService.textColorBold}}>
 						<h5 className="modal-title">Verify your E-mail</h5>
 					</div>
-					<div className="modal-body" style={{backgroundColor: this.props.colors.bgColor, color: this.props.colors.textColor}}>
+					<div className="modal-body" style={{backgroundColor: this.mThemeService.backgroundColor, color: this.mThemeService.textColor}}>
 						<p>Please enter your E-mail address. We will send an e-mail with further instructions</p>
 						<FormAlertComponent alert={this.mFormAlert} />
 						<form onSubmit={this.handleSubmitAsync}>
 							<div className="mb-2">
-								<InputItemComponent item={this.mEmailItem} isNightMode={this.props.isNightMode} />
+								<InputItemComponent item={this.mEmailItem} />
 							</div>
-							<LoadingButtonComponent button={this.mLoadingButton} isNightMode={this.props.isNightMode} />
+							<LoadingButtonComponent button={this.mLoadingButton} />
 							<button type="button" className="btn btn-outline-danger col-12 mt-2" onClick={this.handleCloseAsync}>Cancel</button>
 						</form>
 					</div>
@@ -201,7 +187,7 @@ class ForgotPasswordEmailFormComponent extends React.Component<ForgotPasswordFor
 		this.mLoadingButton.start()
 
 		try {
-			await this.props.authService.sendPasswordResetEmailAsync(email)
+			await this.mAuthService.sendPasswordResetEmailAsync(email)
 			await this.props.completionSource().resolve(`Verification has been reset to ${email}`)
 		} catch (e) {
 			const error = e as FirebaseAuthError
@@ -218,16 +204,7 @@ class ForgotPasswordEmailFormComponent extends React.Component<ForgotPasswordFor
 	}
 }
 
-interface ForgotPasswordFormProps extends NightModeProps {
+interface ForgotPasswordFormProps {
 	formId: string,
-	authService: AuthService,
-	completionSource: () => PromiseCompletionSource<string | undefined>,
-	colors: Colors
-}
-
-interface Colors {
-	bgColor: string,
-	headerBgColor: string,
-	textColor: string,
-	textBoldColor: string
+	completionSource: () => PromiseCompletionSource<string | undefined>
 }

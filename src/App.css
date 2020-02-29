@@ -32,14 +32,6 @@
 	color: #61dafb;
 }
 
-.dropdown-item-light:hover {
-	background-color: #f8f9fa !important;
-}
-
-.dropdown-item-dark:hover {
-	background-color: #262626 !important;
-}
-
 @keyframes App-logo-spin {
 	from {
 		transform: rotate(0deg);
@@ -70,4 +62,13 @@ input[type=number] {
 
 .font-weight-550 {
 	font-weight: 550;
+}
+
+/* Theme */
+.dropdown-item-day:hover {
+	background-color: #f8f9fa !important;
+}
+
+.dropdown-item-night:hover {
+	background-color: #262626 !important;
 }

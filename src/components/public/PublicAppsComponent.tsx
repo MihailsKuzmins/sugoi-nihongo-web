@@ -1,4 +1,3 @@
-import useGlobalState from 'helpers/useGlobalState'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { linkInNewTabProps } from 'resources/constants/uiConstants'
@@ -7,11 +6,13 @@ import signInSugoiNihongoNight from 'resources/images/sign-in-sugoi-nihongo-nigh
 import signInSugoiNihongoLight from 'resources/images/sign-in-sugoi-nihongo.png'
 import { apacheLicence2 } from 'resources/misc/licenceTypes'
 import { authSignIn } from 'resources/routing/routes'
-import { lightTextBoldColor, lightTextColor, nightTextBoldColor, nightTextColor } from 'resources/ui/colors'
+import ThemeService from 'services/ui/themeService'
+import { container } from 'tsyringe'
 import './PublicAppsComponent.css'
 
 const PublicAppsComponent: React.FC = () => {
-	const [isNightMode,] = useGlobalState('isNightMode')
+	const {isNightMode, textColor, textColorBold} = container.resolve(ThemeService)
+	
 	const publicReposId = 'public-repositories'
 
 	const apps = [{
@@ -38,15 +39,11 @@ const PublicAppsComponent: React.FC = () => {
 		licence: apacheLicence2
 	}]
 
-	const colors: Colors = isNightMode
-		? {textColor: nightTextColor, textBoldColor: nightTextBoldColor}
-		: {textColor: lightTextColor, textBoldColor: lightTextBoldColor}
-
 	return (
 		<div className="container text-left">
 			<div className="col-12">
-				<h4 style={{color: colors.textBoldColor}}>Sugoi Nihongo applications</h4>
-				<p style={{color: colors.textColor}}>These applications are <b>open source</b>, i.e. the codebase of out apps is available to the public, so everyone can verify what the apps do with your devices. The code which is published in out <a href={`#${publicReposId}`}>public repositories</a> represents the same build as the apps you use.</p>
+				<h4 style={{color: textColorBold}}>Sugoi Nihongo applications</h4>
+				<p style={{color: textColor}}>These applications are <b>open source</b>, i.e. the codebase of out apps is available to the public, so everyone can verify what the apps do with your devices. The code which is published in out <a href={`#${publicReposId}`}>public repositories</a> represents the same build as the apps you use.</p>
 			</div>
 			<div className="col-12 row">
 				{
@@ -54,7 +51,7 @@ const PublicAppsComponent: React.FC = () => {
 						const img = <img src={x.icon} alt={x.alt} className="app-icon col-12"/>
 
 						return (
-							<div className="text-center col-12 col-sm-6" key={i} style={{color: colors.textColor}}>
+							<div className="text-center col-12 col-sm-6" key={i} style={{color: textColor}}>
 								{
 									x.isInternal
 										? (<Link to={x.link}>{img}</Link>)
@@ -67,7 +64,7 @@ const PublicAppsComponent: React.FC = () => {
 				}
 			</div>
 			<div id={publicReposId} className="col-12 mt-3">
-				<h4 style={{color: colors.textBoldColor}}>Public repositories</h4>
+				<h4 style={{color: textColorBold}}>Public repositories</h4>
 				{
 					publicRepos.map((x, i) => (
 						<div className="public-repo-item" key={i}>
@@ -76,7 +73,7 @@ const PublicAppsComponent: React.FC = () => {
 									{x.title}
 								</a>
 							</h5>
-							<p><span style={{color: colors.textColor}}>Licensed under</span> <a href={x.licence.link} {...linkInNewTabProps}>{x.licence.title}</a></p>
+							<p><span style={{color: textColor}}>Licensed under</span> <a href={x.licence.link} {...linkInNewTabProps}>{x.licence.title}</a></p>
 						</div>
 					))
 				}
@@ -86,8 +83,3 @@ const PublicAppsComponent: React.FC = () => {
 }
 
 export default PublicAppsComponent
-
-interface Colors {
-	textColor: string,
-	textBoldColor: string
-}

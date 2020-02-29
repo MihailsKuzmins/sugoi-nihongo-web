@@ -6,8 +6,12 @@ import Disposable from 'models/system/disposable'
 import React from 'react'
 import { combineLatest, Observable, ReplaySubject } from 'rxjs'
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators'
+import ThemeService from 'services/ui/themeService'
+import { container } from 'tsyringe'
 
-export default abstract class ItemComponentBase<TValue, TProps extends { item: ItemBase<TValue> }, TState extends StateBase<TValue>> extends React.PureComponent<TProps, TState> {
+export default abstract class ItemComponentBase<TValue, TProps extends { item: ItemBase<TValue> }, TState extends StateBase<TValue>> extends React.Component<TProps, TState> {
+	protected readonly themeService = container.resolve(ThemeService)
+
 	private readonly mDisposable = new CompositeDisposable()
 	private readonly mSubDisposable = new SubDisposable()
 

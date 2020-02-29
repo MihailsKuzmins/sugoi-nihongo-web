@@ -1,11 +1,13 @@
-import { NightModeProps } from 'components/_hoc/withNightMode'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import React from 'react'
 import { darkMode, lightMode } from 'resources/constants/uiConstants'
 import { Observable, ReplaySubject } from 'rxjs'
 import { startWith } from 'rxjs/operators'
+import ThemeService from 'services/ui/themeService'
+import { container } from 'tsyringe'
 
-export default class CloseModalButtonComponent extends React.PureComponent<Props, State> {
+export default class CloseModalButtonComponent extends React.Component<Props, State> {
+	private readonly mThemeService = container.resolve(ThemeService)
 	private readonly mSubDisposable = new SubDisposable()
 
 	constructor(props: Props) {
@@ -30,7 +32,7 @@ export default class CloseModalButtonComponent extends React.PureComponent<Props
 	}
 
 	public readonly render = () => {
-		const textMode = this.props.isNightMode
+		const textMode = this.mThemeService.isNightMode
 			? lightMode
 			: darkMode
 
@@ -64,7 +66,7 @@ export class CloseModalButton {
 	public get isDisabledObservable() { return this.mIsDisabledObservable }
 }
 
-interface Props extends NightModeProps {
+interface Props {
 	button: CloseModalButton
 }
 

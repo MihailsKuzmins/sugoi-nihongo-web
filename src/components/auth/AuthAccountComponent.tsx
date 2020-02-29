@@ -1,7 +1,6 @@
 import InputItemComponent, { InputItem } from 'components/system/items/InputItemComponent'
 import FormAlertComponent, { FormAlert } from 'components/system/misc/FormAlertComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
-import withNightMode, { NightModeProps } from 'components/_hoc/withNightMode'
 import { getAuthResultMessage } from 'functions/auth/authResultFunctions'
 import { hideModal, setModalNonCancellable, showModal } from 'functions/uiFunctions'
 import EqualToRule from 'helpers/items/rules/equalToRule'
@@ -12,28 +11,24 @@ import React from 'react'
 import { minPasswordLength } from 'resources/constants/authConstants'
 import FirebaseAuthError from 'resources/errors/firebaseAuthError'
 import { AlertType } from 'resources/ui/alertType'
-import { lightBackground, lightNavBarColor, lightTextBoldColor, lightTextColor, nightBackground, nightNavBarColor, nightTextBoldColor, nightTextColor } from 'resources/ui/colors'
 import { InputType } from 'resources/ui/inputType'
 import { skip } from 'rxjs/operators'
 import AuthService from 'services/authService'
+import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 import { lightMode, darkMode } from 'resources/constants/uiConstants'
 
-class AuthAccountComponent extends React.Component<Props> {
+
+export default class AuthAccountComponent extends React.Component<Props> {
 	private readonly mAuthService = container.resolve(AuthService)
+	private readonly mThemeService = container.resolve(ThemeService)
 
 	private readonly mFormAlert = new FormAlert(AlertType.Success)
 	private readonly mChangePasswordFormId = 'changePasswordForm'
 	private changePasswordCompletionSource = new PromiseCompletionSource<string | undefined>()
 
 	public readonly render = () => {
-		const colors: Colors = this.props.isNightMode
-			? {bgColor: nightBackground, headerBgColor: nightNavBarColor, textColor: nightTextColor, textBoldColor: nightTextBoldColor}
-			: {bgColor: lightBackground, headerBgColor: lightNavBarColor, textColor: lightTextColor, textBoldColor: lightTextBoldColor}
-
-		const buttonMode = this.props.isNightMode
-			? lightMode
-			: darkMode
+		const btnMode = this.mThemeService.isNightMode ? lightMode : darkMode
 
 		return (
 			<div className="container row mt-3">
@@ -41,18 +36,16 @@ class AuthAccountComponent extends React.Component<Props> {
 					<FormAlertComponent alert={this.mFormAlert} />
 				</div>
 				<div className="col-12 col-sm-6 text-left">
-					<h4 className="col-12" style={{color: colors.textBoldColor}}>Your e-mail</h4>
-					<p className="col-12" style={{color: colors.textColor}}>{this.mAuthService.userEmail}</p>
+					<h4 className="col-12" style={{color: this.mThemeService.textColorBold}}>Your e-mail</h4>
+					<p className="col-12" style={{color: this.mThemeService.textColor}}>{this.mAuthService.userEmail}</p>
 				</div>
 				<div className="col-12 col-sm-6">
-					<button type="button" className={`btn btn-outline-${buttonMode} col-12`} onClick={this.handleChangePasswordAsync}>Change password</button>
+					<button type="button" className={`btn btn-outline-${btnMode} col-12`} onClick={this.handleChangePasswordAsync}>Change password</button>
 				</div>
 				<ChangePasswordFormComponent 
 					formId={this.mChangePasswordFormId}
 					authService={this.mAuthService}
-					completionSource={() => this.changePasswordCompletionSource}
-					isNightMode={this.props.isNightMode}
-					colors={colors} />
+					completionSource={() => this.changePasswordCompletionSource} />
 			</div>
 		)
 	}
@@ -71,19 +64,12 @@ class AuthAccountComponent extends React.Component<Props> {
 	}
 }
 
-export default withNightMode<BasicProps>(AuthAccountComponent)
-
 interface BasicProps {}
-interface Props extends NightModeProps, BasicProps {}
-
-interface Colors {
-	bgColor: string,
-	headerBgColor: string,
-	textBoldColor: string,
-	textColor: string
-}
+interface Props extends BasicProps {}
 
 class ChangePasswordFormComponent extends React.Component<ChangePasswordFormProps> {
+	private readonly mThemeService = container.resolve(ThemeService)
+
 	private readonly mFormAlert = new FormAlert()
 	private readonly mLoadingButton = new LoadingButton('Change password', 'Changing...')
 
@@ -122,20 +108,20 @@ class ChangePasswordFormComponent extends React.Component<ChangePasswordFormProp
 	public readonly render = () => (
 		<div className="modal fade m-0" id={this.props.formId} tabIndex={-1} role="dialog" aria-labelledby="forgotPasswordForm" aria-hidden="true">
 			<div className="modal-dialog" role="document">
-				<div className="modal-content" style={{backgroundColor: this.props.colors.headerBgColor}}>
-					<div className="modal-header" style={{color: this.props.colors.textBoldColor}}>
+				<div className="modal-content" style={{backgroundColor: this.mThemeService.backgroundColorDark}}>
+					<div className="modal-header" style={{color: this.mThemeService.textColorBold}}>
 						<h5 className="modal-title">Change the current password</h5>
 					</div>
-					<div className="modal-body" style={{backgroundColor: this.props.colors.bgColor, color: this.props.colors.textColor}}>
+					<div className="modal-body" style={{backgroundColor: this.mThemeService.backgroundColor, color: this.mThemeService.textColor}}>
 						<p>Please verify your current password and enter a new one</p>
 						<FormAlertComponent alert={this.mFormAlert} />
 						<form onSubmit={this.handleSubmitAsync}>
 							<div className="mb-2">
-								<InputItemComponent item={this.mCurrentPasswordItem} isNightMode={this.props.isNightMode} />
-								<InputItemComponent item={this.mNewPasswordItem} isNightMode={this.props.isNightMode} />
-								<InputItemComponent item={this.mNewPasswordConfirmItem} isNightMode={this.props.isNightMode} />
+								<InputItemComponent item={this.mCurrentPasswordItem} />
+								<InputItemComponent item={this.mNewPasswordItem} />
+								<InputItemComponent item={this.mNewPasswordConfirmItem} />
 							</div>
-							<LoadingButtonComponent button={this.mLoadingButton} isNightMode={this.props.isNightMode} />
+							<LoadingButtonComponent button={this.mLoadingButton} />
 							<button type="button" className="btn btn-outline-danger col-12 mt-2" onClick={this.handleCloseAsync}>Cancel</button>
 						</form>
 					</div>
@@ -178,9 +164,8 @@ class ChangePasswordFormComponent extends React.Component<ChangePasswordFormProp
 	}
 }
 
-interface ChangePasswordFormProps extends NightModeProps {
+interface ChangePasswordFormProps {
 	formId: string,
 	authService: AuthService,
-	completionSource: () => PromiseCompletionSource<string | undefined>,
-	colors: Colors
+	completionSource: () => PromiseCompletionSource<string | undefined>
 }

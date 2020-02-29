@@ -2,45 +2,41 @@ import 'reflect-metadata'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 import NavBarComponent from 'components/system/NavBarComponent'
-import SettingsFormComponent from 'components/system/NavBarSettingsComponent'
+import SettingsComponent from 'components/system/SettingsComponent'
 import useGlobalState from 'helpers/useGlobalState'
 import React, { Suspense } from 'react'
-import { Helmet } from 'react-helmet'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { localStorageIsNightMode } from 'resources/constants/localStorageConstants'
 import { authAccount, authSignIn, authSignUp, grammarRuleDetail, grammarRuleList, home, publicApps, sentenceDetail, sentenceList, wordDetail, wordList } from 'resources/routing/routes'
-import { lightBackground, nightBackground } from 'resources/ui/colors'
 import AuthService from 'services/authService'
+import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 import './App.css'
 
-const authService = container.resolve(AuthService)
+const settingsFormId = 'settingsForm'
 
 const App: React.FC = () => {
+	const authService = container.resolve(AuthService)
+	const themeService = container.resolve(ThemeService)
+
 	const [isAuth, setIsAuth] = useGlobalState('isAuthenticated')
 	const [isNightMode, setIsNightMode] = useGlobalState('isNightMode')
 
-	const isNightModeSession =  localStorage.getItem(localStorageIsNightMode) === 'true'
+	const isNightModeSession = localStorage.getItem(localStorageIsNightMode) === 'true'
 	if (isNightMode !== isNightModeSession)
 		setIsNightMode(isNightModeSession)
 	
 	if (isAuth !== authService.isAuthenticated)
 		setIsAuth(authService.isAuthenticated)
 
-	const settingsFormId = 'settingsForm'
-
-	const bgColor = isNightMode
-		? nightBackground
-		: lightBackground
+	themeService.isNightMode = isNightMode
+	document.body.style.backgroundColor = themeService.backgroundColor
 
 	return (
 		<Router>
 			<div className="App">
-				<Helmet>
-					<style>{`body { background-color: ${bgColor}; }`}</style>
-				</Helmet>
 				<NavBarComponent settingsFormId={settingsFormId} />
-				<SettingsFormComponent formId={settingsFormId} />
+				<SettingsComponent formId={settingsFormId} />
 				{isAuth
 					? createAuthorisedUi()
 					: createUnauthorisedUi()

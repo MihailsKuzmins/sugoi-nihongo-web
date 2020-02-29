@@ -2,7 +2,6 @@ import FormComponentBase from 'components/FormComponentBase'
 import TextAreaItemComponent, { TextAreaItem } from 'components/system/items/TextAreaItemComponent'
 import CloseModalButtonComponent, { CloseModalButton } from 'components/system/misc/CloseModalButtonComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
-import { NightModeProps } from 'components/_hoc/withNightMode'
 import { hasNoKanji } from 'functions/japaneseFunctions'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import JapaneseRule from 'helpers/items/rules/japaneseRule'
@@ -13,13 +12,15 @@ import SentenceDetailModel from 'models/sentence/sentenceDetailModel'
 import { LooseObject } from 'models/system/looseObject'
 import React from 'react'
 import { sentenceOriginal, sentenceTranscription, sentenceTranslation } from 'resources/constants/firestoreConstants'
-import { lightBackground, lightNavBarColor, lightTextBoldColor, lightTextColor, nightBackground, nightNavBarColor, nightTextBoldColor, nightTextColor } from 'resources/ui/colors'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 import SentenceService from 'services/sentenceService'
+import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 
 export default class SentenceFormComponent extends FormComponentBase<Props> {
 	private readonly mSentenceService = container.resolve(SentenceService)
+	private readonly mThemeService = container.resolve(ThemeService)
+	
 	private readonly mLoadingButton = new LoadingButton('Save', 'Saving...')
 	private readonly mCloseModalButton = new CloseModalButton()
 
@@ -67,26 +68,23 @@ export default class SentenceFormComponent extends FormComponentBase<Props> {
 	}
 
 	public readonly render = () => {
-		const colors: Colors = this.props.isNightMode
-			? {bgColor: nightBackground, headerBgColor: nightNavBarColor, textColor: nightTextColor, textBoldColor: nightTextBoldColor}
-			: {bgColor: lightBackground, headerBgColor: lightNavBarColor, textColor: lightTextColor, textBoldColor: lightTextBoldColor}
-
+		const {textColorBold, backgroundColor, backgroundColorDark} = this.mThemeService
 
 		return (
 			<div className="modal fade m-0" id={this.props.formId} tabIndex={-1} role="dialog" aria-hidden="true">
 				<div className="modal-dialog" role="document">
-					<div className="modal-content" style={{backgroundColor: colors.headerBgColor}}>
-						<div className="modal-header" style={{color: colors.textBoldColor}}>
+					<div className="modal-content" style={{backgroundColor: backgroundColorDark}}>
+						<div className="modal-header" style={{color: textColorBold}}>
 							<h5 className="modal-title">{this.props.title}</h5>
-							<CloseModalButtonComponent button={this.mCloseModalButton} isNightMode={this.props.isNightMode} />
+							<CloseModalButtonComponent button={this.mCloseModalButton} />
 						</div>
-						<div className="modal-body" style={{backgroundColor: colors.bgColor}}>
+						<div className="modal-body" style={{backgroundColor: backgroundColor}}>
 							<form onSubmit={this.handleSubmitAsync}>
-								<TextAreaItemComponent item={this.mOriginalItem} isNightMode={this.props.isNightMode} />
-								<TextAreaItemComponent item={this.mTranslationItem} isNightMode={this.props.isNightMode} />
-								<TextAreaItemComponent item={this.mTranscriptionItem} isNightMode={this.props.isNightMode} />
+								<TextAreaItemComponent item={this.mOriginalItem} />
+								<TextAreaItemComponent item={this.mTranslationItem} />
+								<TextAreaItemComponent item={this.mTranscriptionItem} />
 								<div className="modal-footer">
-									<LoadingButtonComponent button={this.mLoadingButton} isNightMode={this.props.isNightMode} />
+									<LoadingButtonComponent button={this.mLoadingButton} />
 								</div>
 							</form>
 						</div>
@@ -118,15 +116,8 @@ export default class SentenceFormComponent extends FormComponentBase<Props> {
 	}
 }
 
-interface Props extends NightModeProps {
+interface Props {
 	sentence: SentenceDetailModel | undefined
 	formId: string,
 	title: string
-}
-
-interface Colors {
-	bgColor: string,
-	headerBgColor: string,
-	textColor: string,
-	textBoldColor: string
 }

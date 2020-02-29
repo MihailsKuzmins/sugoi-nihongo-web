@@ -3,7 +3,6 @@ import MaxLengthRule from 'helpers/items/rules/maxLengthRule'
 import RuleBase from 'helpers/items/rules/ruleBase'
 import React from 'react'
 import { InputType } from 'resources/ui/inputType'
-import { nightTextColor, nightBackground, lightTextColor, lightBackground, nightTextBoldColor, lightTextBoldColor, nightInputDisabled, lightInputDisabled } from 'resources/ui/colors'
 
 export default class InputItemComponent extends ItemComponentBase<string, Props, State> {
 	constructor(props: Props) {
@@ -16,30 +15,26 @@ export default class InputItemComponent extends ItemComponentBase<string, Props,
 
 	public readonly render = () => {
 		const { inputType, label, id, placeholder } = this.props.item
-		const inputClassName = 'form-control' + (this.state.isValid ? '' : ' is-invalid')
-
-		const colors: Colors = this.props.isNightMode
-			? {textColor: nightTextColor, textBoldColor: nightTextBoldColor, bgColor: nightBackground, inputDisabled: nightInputDisabled}
-			: {textColor: lightTextColor, textBoldColor: lightTextBoldColor, bgColor: lightBackground, inputDisabled: lightInputDisabled}
-
-		const inputBgColor = this.state.isDisabled
-			? colors.inputDisabled
-			: colors.bgColor
+		const { isValid, isDisabled, value, errorMessage } = this.state
+		const { textColor, textColorBold, backgroundColor, inputBackgroundColorDisabled } = this.themeService
+		
+		const inputClassName = 'form-control' + (isValid ? '' : ' is-invalid')
+		const inputBgColor = isDisabled ? inputBackgroundColorDisabled : backgroundColor
 
 		return (
 			<div className="form-group">
 				{label &&
-					<label className="control-label float-left" htmlFor={id} style={{color: colors.textColor}}>
+					<label className="control-label float-left" htmlFor={id} style={{color: textColor}}>
 						{label}:
 					</label>
 				}
-				<input id={id} type={inputType} placeholder={placeholder} value={this.state.value} onChange={this.handleChange}
-					disabled={this.state.isDisabled} style={{backgroundColor: inputBgColor, color: colors.textBoldColor}}
+				<input id={id} type={inputType} placeholder={placeholder} value={value} onChange={this.handleChange}
+					disabled={isDisabled} style={{backgroundColor: inputBgColor, color: textColorBold}}
 					className={inputClassName} autoComplete="off"/>
 				
-				{!this.state.isValid && this.state.errorMessage &&
+				{!isValid && errorMessage &&
 					<div className="invalid-feedback text-left">
-						{this.state.errorMessage}
+						{errorMessage}
 					</div>
 				}
 			</div>
@@ -77,7 +72,6 @@ export class InputItem extends ItemBase<string> {
 
 interface Props {
 	item: InputItem,
-	isNightMode: boolean
 }
 
 interface State {
@@ -85,11 +79,4 @@ interface State {
 	isDisabled: boolean,
 	isValid: boolean,
 	errorMessage: string | undefined
-}
-
-interface Colors {
-	textColor: string,
-	textBoldColor: string,
-	bgColor: string,
-	inputDisabled: string
 }

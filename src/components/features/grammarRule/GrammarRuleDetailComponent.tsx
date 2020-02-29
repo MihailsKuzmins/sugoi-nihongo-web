@@ -1,20 +1,21 @@
 import Octicon, { Pencil } from '@primer/octicons-react'
 import ComponentBase from 'components/ComponentBase'
 import GrammarRuleFormComponent from 'components/features/grammarRule/GrammarRuleFormComponent'
-import withNightMode, { NightModeProps } from 'components/_hoc/withNightMode'
 import GrammarRuleDetailModel from 'models/grammarRule/grammarRuleDetailModel'
 import moment from 'moment'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { h3IconHeight } from 'resources/constants/uiConstants'
-import { lightNavBarColor, lightTextBoldColor, lightTextColor, nightNavBarColor, nightTextBoldColor, nightTextColor } from 'resources/ui/colors'
 import GrammarRuleService from 'services/grammarRuleService'
+import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 import createSpinner from 'ui/createSpinner'
 import './GrammarRuleDetailComponent.css'
 
-class GrammarRuleDetailComponent extends ComponentBase<Props, State> {
+export default class GrammarRuleDetailComponent extends ComponentBase<Props, State> {
 	private readonly mGrammarRuleService = container.resolve(GrammarRuleService)
+	private readonly mThemeService = container.resolve(ThemeService)
+
 	private readonly mFormId = 'grammarRuleEdit'
 
 	constructor(props: Props) {
@@ -29,69 +30,61 @@ class GrammarRuleDetailComponent extends ComponentBase<Props, State> {
 	}
 
 	public readonly render = () => {
-		const colors: Colors = this.props.isNightMode
-			? {textColor: nightTextColor, textBoldColor: nightTextBoldColor, bgBoldColor: nightNavBarColor}
-			: {textColor: lightTextColor, textBoldColor: lightTextBoldColor, bgBoldColor: lightNavBarColor}
+		const {textColorBold, textColor, backgroundColorDark} = this.mThemeService
 
 		return (
 			<div>
 				<div id="grammar-rule-content" className="container">
 					<div className="row col-12 m-0">
-						<h3 className="text-left m-0" style={{color: colors.textBoldColor}}>Grammar rule</h3>
+						<h3 className="text-left m-0" style={{color: textColorBold}}>Grammar rule</h3>
 						{this.state.grammarRule?.grammarRuleId &&
 							<button type="button" className="close ml-auto" data-toggle="modal" data-target={`#${this.mFormId}`}
-								style={{color: colors.textColor}}>
+								style={{color: textColor}}>
 								<Octicon icon={Pencil} height={h3IconHeight}/>
 							</button>
 						}
 					</div>
-					<hr/>
-					{this.state.grammarRule === undefined && createSpinner(this.props.isNightMode)}
+					<hr style={{borderTopColor: textColor}} />
+					{this.state.grammarRule === undefined && createSpinner(textColor)}
 					{this.state.grammarRule?.grammarRuleId &&
 						<div>
-							{createDetailLayout(this.state.grammarRule, colors)}
+							{this.createDetailLayout(this.state.grammarRule)}
 							<GrammarRuleFormComponent
 								grammarRule={this.state.grammarRule}
 								formId={this.mFormId}
-								title='Edit grammar rule'
-								isNightMode={this.props.isNightMode}/>
+								title='Edit grammar rule' />
 						</div>
 					}
 				</div>
-				<footer id="grammar-rule-footer" style={{backgroundColor: colors.bgBoldColor, color: colors.textColor}}>
-					<div className="container">
-						{this.state.grammarRule?.grammarRuleId &&
+				{this.state.grammarRule?.grammarRuleId &&
+					<footer id="grammar-rule-footer" style={{backgroundColor: backgroundColorDark, color: textColor}}>
+						<div className="container">
 							<p className="text-left m-0">
 								Created on {moment(this.state.grammarRule.dateCreated).format('DD.MM.YYYY')}
 							</p>
-						}
-					</div>
-				</footer>
+						</div>
+					</footer>
+				}
+			</div>
+		)
+	}
+
+	private createDetailLayout(grammarRule: GrammarRuleDetailModel) {
+		const {textColorBold, textColor} = this.mThemeService
+
+		return (
+			<div>
+				<h4 style={{color: textColorBold}}>{grammarRule.header}</h4>
+				<p className="text-left font-size-20" style={{color: textColor}}>{grammarRule.body}</p>
 			</div>
 		)
 	}
 }
 
-export default withNightMode<BasicProps>(GrammarRuleDetailComponent)
-
-interface BasicProps extends RouteComponentProps<{
+interface Props extends RouteComponentProps<{
 	grammarRuleId: string
 }> {}
-interface Props extends NightModeProps, BasicProps {}
 
 interface State {
 	grammarRule: GrammarRuleDetailModel | undefined
 }
-
-interface Colors {
-	textColor: string,
-	textBoldColor: string,
-	bgBoldColor: string
-}
-
-const createDetailLayout = (grammarRule: GrammarRuleDetailModel, colors: Colors) => (
-	<div>
-		<h4 style={{color: colors.textBoldColor}}>{grammarRule.header}</h4>
-		<p className="text-left font-size-20" style={{color: colors.textColor}}>{grammarRule.body}</p>
-	</div>
-)
