@@ -3,6 +3,7 @@ import InputItemComponent, { InputItem } from 'components/system/items/InputItem
 import TextAreaItemComponent, { TextAreaItem } from 'components/system/items/TextAreaItemComponent'
 import CloseModalButtonComponent, { CloseModalButton } from 'components/system/misc/CloseModalButtonComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
+import withClosingModal from 'components/_hoc/withClosingModal'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import NotNullOrWhiteSpaceRule from 'helpers/items/rules/notNullOrWhiteSpaceRule'
 import GrammarRuleDetailModel from 'models/grammarRule/grammarRuleDetailModel'
@@ -13,7 +14,7 @@ import GrammarRuleService from 'services/grammarRuleService'
 import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 
-export default class GrammarRuleFormComponent extends FormComponentBase<Props> {
+class GrammarRuleFormComponent extends FormComponentBase<Props> {
 	private readonly mGrammarRuleService = container.resolve(GrammarRuleService)
 	private readonly mThemeService = container.resolve(ThemeService)
 
@@ -95,6 +96,8 @@ export default class GrammarRuleFormComponent extends FormComponentBase<Props> {
 		this.mBodyItem.initialValue = props.grammarRule?.body ?? ''
 	}
 }
+
+export default withClosingModal(GrammarRuleFormComponent)
 
 interface Props {
 	grammarRule: GrammarRuleDetailModel | undefined,

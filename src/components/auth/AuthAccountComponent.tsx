@@ -1,6 +1,7 @@
 import InputItemComponent, { InputItem } from 'components/system/items/InputItemComponent'
 import FormAlertComponent, { FormAlert } from 'components/system/misc/FormAlertComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
+import withClosingModal from 'components/_hoc/withClosingModal'
 import { getAuthResultMessage } from 'functions/auth/authResultFunctions'
 import { hideModal, setModalNonCancellable, showModal } from 'functions/uiFunctions'
 import EqualToRule from 'helpers/items/rules/equalToRule'
@@ -9,6 +10,7 @@ import NotNullOrWhiteSpaceRule from 'helpers/items/rules/notNullOrWhiteSpaceRule
 import { PromiseCompletionSource } from 'promise-completion-source'
 import React from 'react'
 import { minPasswordLength } from 'resources/constants/authConstants'
+import { darkMode, lightMode } from 'resources/constants/uiConstants'
 import FirebaseAuthError from 'resources/errors/firebaseAuthError'
 import { AlertType } from 'resources/ui/alertType'
 import { InputType } from 'resources/ui/inputType'
@@ -16,7 +18,6 @@ import { skip } from 'rxjs/operators'
 import AuthService from 'services/authService'
 import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
-import { lightMode, darkMode } from 'resources/constants/uiConstants'
 
 
 export default class AuthAccountComponent extends React.Component<Props> {
@@ -42,7 +43,7 @@ export default class AuthAccountComponent extends React.Component<Props> {
 				<div className="col-12 col-sm-6">
 					<button type="button" className={`btn btn-outline-${btnMode} col-12`} onClick={this.handleChangePasswordAsync}>Change password</button>
 				</div>
-				<ChangePasswordFormComponent 
+				<ChangePasswordFormComponentWithClosing
 					formId={this.mChangePasswordFormId}
 					authService={this.mAuthService}
 					completionSource={() => this.changePasswordCompletionSource} />
@@ -163,6 +164,8 @@ class ChangePasswordFormComponent extends React.Component<ChangePasswordFormProp
 		await this.props.completionSource().resolve(undefined)
 	}
 }
+
+const ChangePasswordFormComponentWithClosing = withClosingModal(ChangePasswordFormComponent)
 
 interface ChangePasswordFormProps {
 	formId: string,

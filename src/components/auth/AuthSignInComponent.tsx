@@ -2,6 +2,7 @@ import InputItemComponent, { InputItem } from 'components/system/items/InputItem
 import ClickableTextComponent, { ClickableText } from 'components/system/misc/ClickableTextComponent'
 import FormAlertComponent, { FormAlert } from 'components/system/misc/FormAlertComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
+import withClosingModal from 'components/_hoc/withClosingModal'
 import { getAuthResultMessage } from 'functions/auth/authResultFunctions'
 import { hideModal, setModalNonCancellable, showModal } from 'functions/uiFunctions'
 import NotNullOrWhiteSpaceRule from 'helpers/items/rules/notNullOrWhiteSpaceRule'
@@ -81,7 +82,7 @@ class SignInComponentImpl extends React.Component<Props> {
 						}
 					</div>
 				</form>
-				<ForgotPasswordEmailFormComponent
+				<ForgotPasswordEmailFormComponentWithClosing
 					formId={this.mForgotPasswordEmailFormId}
 					completionSource={() => this.mForgotPasswordEmailCompletionSource} />
 			</div>
@@ -203,6 +204,8 @@ class ForgotPasswordEmailFormComponent extends React.Component<ForgotPasswordFor
 		await this.props.completionSource().resolve(undefined)
 	}
 }
+
+const ForgotPasswordEmailFormComponentWithClosing = withClosingModal(ForgotPasswordEmailFormComponent)
 
 interface ForgotPasswordFormProps {
 	formId: string,

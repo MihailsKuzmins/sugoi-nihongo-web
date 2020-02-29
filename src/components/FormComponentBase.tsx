@@ -1,4 +1,5 @@
 import FormAlertComponent, { FormAlert } from 'components/system/misc/FormAlertComponent'
+import { ModalProps } from 'components/_hoc/withClosingModal'
 import { createSaveData } from 'functions/system/inputItemFunctions'
 import { hideModal, setModalNonCancellable } from 'functions/uiFunctions'
 import SubDisposable from 'helpers/disposable/subDisposable'
@@ -88,6 +89,4 @@ export default abstract class FormComponentBase<TProps extends Props> extends Re
 	}
 }
 
-interface Props {
-	formId: string
-}
+interface Props extends ModalProps {}

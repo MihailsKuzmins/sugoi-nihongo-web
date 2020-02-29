@@ -2,6 +2,7 @@ import FormComponentBase from 'components/FormComponentBase'
 import TextAreaItemComponent, { TextAreaItem } from 'components/system/items/TextAreaItemComponent'
 import CloseModalButtonComponent, { CloseModalButton } from 'components/system/misc/CloseModalButtonComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
+import withClosingModal from 'components/_hoc/withClosingModal'
 import { hasNoKanji } from 'functions/japaneseFunctions'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import JapaneseRule from 'helpers/items/rules/japaneseRule'
@@ -17,7 +18,7 @@ import SentenceService from 'services/sentenceService'
 import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 
-export default class SentenceFormComponent extends FormComponentBase<Props> {
+class SentenceFormComponent extends FormComponentBase<Props> {
 	private readonly mSentenceService = container.resolve(SentenceService)
 	private readonly mThemeService = container.resolve(ThemeService)
 	
@@ -115,6 +116,8 @@ export default class SentenceFormComponent extends FormComponentBase<Props> {
 		this.mTranscriptionItem.initialValue= props.sentence?.transcription ?? ''
 	}
 }
+
+export default withClosingModal(SentenceFormComponent)
 
 interface Props {
 	sentence: SentenceDetailModel | undefined

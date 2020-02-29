@@ -4,6 +4,7 @@ import InputItemComponent, { InputItem } from 'components/system/items/InputItem
 import TextAreaItemComponent, { TextAreaItem } from 'components/system/items/TextAreaItemComponent'
 import CloseModalButtonComponent, { CloseModalButton } from 'components/system/misc/CloseModalButtonComponent'
 import LoadingButtonComponent, { LoadingButton } from 'components/system/misc/LoadingButtonComponent'
+import withClosingModal from 'components/_hoc/withClosingModal'
 import { hasNoKanji } from 'functions/japaneseFunctions'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import KanaOrKanjiRule from 'helpers/items/rules/kanaOrKanjiRule'
@@ -19,7 +20,7 @@ import ThemeService from 'services/ui/themeService'
 import WordService from 'services/wordService'
 import { container } from 'tsyringe'
 
-export default class WordFormComponent extends FormComponentBase<Props> {
+class WordFormComponent extends FormComponentBase<Props> {
 	private readonly mWordService = container.resolve(WordService)
 	private readonly mThemeService = container.resolve(ThemeService)
 
@@ -147,6 +148,8 @@ export default class WordFormComponent extends FormComponentBase<Props> {
 		)
 	}
 }
+
+export default withClosingModal(WordFormComponent)
 
 interface Props {
 	word: WordDetailModel | undefined,

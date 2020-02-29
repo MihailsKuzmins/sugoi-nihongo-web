@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { localStorageIsNightMode } from 'resources/constants/localStorageConstants'
 import { authAccount, authSignIn, authSignUp, grammarRuleDetail, grammarRuleList, home, publicApps, sentenceDetail, sentenceList, wordDetail, wordList } from 'resources/routing/routes'
 import AuthService from 'services/authService'
+import WindowOnPop from 'services/middleware/windowOnPop'
 import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 import './App.css'
@@ -18,6 +19,7 @@ const settingsFormId = 'settingsForm'
 const App: React.FC = () => {
 	const authService = container.resolve(AuthService)
 	const themeService = container.resolve(ThemeService)
+	const windowOnPop = container.resolve(WindowOnPop)
 
 	const [isAuth, setIsAuth] = useGlobalState('isAuthenticated')
 	const [isNightMode, setIsNightMode] = useGlobalState('isNightMode')
@@ -31,6 +33,9 @@ const App: React.FC = () => {
 
 	themeService.isNightMode = isNightMode
 	document.body.style.backgroundColor = themeService.backgroundColor
+
+	window.onpopstate = (_: PopStateEvent) =>
+		windowOnPop.run()
 
 	return (
 		<Router>

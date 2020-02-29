@@ -1,9 +1,12 @@
+import { ModalProps } from 'components/_hoc/withClosingModal'
 import { NightModeProps } from 'components/_hoc/withNightMode'
+import { hideModal } from 'functions/uiFunctions'
 import SubDisposable from 'helpers/disposable/subDisposable'
 import useGlobalState from 'helpers/useGlobalState'
 import React from 'react'
 import { localStorageIsNightMode } from 'resources/constants/localStorageConstants'
 import { skip } from 'rxjs/operators'
+import WindowOnPop from 'services/middleware/windowOnPop'
 import ThemeService from 'services/ui/themeService'
 import { container } from 'tsyringe'
 import CheckboxItemComponent, { CheckboxItem } from './items/CheckboxItemComponent'
@@ -24,18 +27,20 @@ const SettingsComponent: React.FC<Props> = (props) => {
 
 export default SettingsComponent
 
-interface Props {
-	formId: string
-}
+interface Props extends ModalProps {}
 
 class SettingsComponentImpl extends React.PureComponent<PropsImpl> {
 	private readonly mThemeService = container.resolve(ThemeService)
+	private readonly mWindowOnPop = container.resolve(WindowOnPop)
+	private readonly mOnBackId = 'settingsOnBack'
 
 	private readonly mSubDisposable = new SubDisposable()
 	private readonly mIsNightModeItem = new CheckboxItem('Night mode', 'settingsNightMode')
 
 	constructor(props: PropsImpl) {
 		super(props)
+
+		this.mWindowOnPop.register(this.mOnBackId, () => hideModal(this.props.formId))
 
 		// Pass `isNightMode` from properties, because themeService has not been initialised when the value is set
 		this.mIsNightModeItem.value = props.isNightMode
@@ -48,6 +53,7 @@ class SettingsComponentImpl extends React.PureComponent<PropsImpl> {
 
 	public readonly componentWillUnmount = () => {
 		this.mSubDisposable.dispose()
+		this.mWindowOnPop.unregister(this.mOnBackId)
 		super.componentWillUnmount?.()
 	}
 
