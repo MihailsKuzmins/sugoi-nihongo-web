@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import NavBarComponent from 'components/system/NavBarComponent'
 import SettingsComponent from 'components/system/SettingsComponent'
 import useGlobalState from 'helpers/useGlobalState'
+import $ from 'jquery'
 import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { localStorageIsNightMode } from 'resources/constants/localStorageConstants'
@@ -33,6 +34,7 @@ const App: React.FC = () => {
 
 	themeService.isNightMode = isNightMode
 	document.body.style.backgroundColor = themeService.backgroundColor
+	$('#favicon').attr('href', `favicon-${themeService.mode}.png`)
 
 	window.onpopstate = (_: PopStateEvent) =>
 		windowOnPop.run()
